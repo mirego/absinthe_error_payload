@@ -19,15 +19,15 @@ end
 
 ## Usage
 
-The best place to find usage examples is by looking at the test cases at the [Kronky Github](https://github.com/Ethelo/kronky) or the docs for `Kronky.Payload`
+The best place to find usage examples is by looking at the test cases at the [Kronky Github](https://github.com/Ethelo/kronky) or the docs for [Kronky.Payload](https://hexdocs.pm/kronky/Kronky.Payload.html#content)
 
 Here's a quick summary of what Kronky includes
 
-`Kronky.ValidationMessage` structs/objects are created with all the information you'd normally be able to access through [Ecto.Changeset.traverse_errors/2](https://hexdocs.pm/ecto/Ecto.Changeset.html#traverse_errors/2).
+[Kronky.ValidationMessage](https://hexdocs.pm/kronky/Kronky.ValidationMessage.html#content) structs/objects are created with all the information you'd normally be able to access through [Ecto.Changeset.traverse_errors/2](https://hexdocs.pm/ecto/Ecto.Changeset.html#traverse_errors/2).
 
-Kronky includes a schema definition to add ValidationMessages to your schema.
+Kronky includes a [schema](https://hexdocs.pm/kronky/Kronky.ValidationMessageTypes.html#content) definition to add ValidationMessages to your schema.
 
-Kronky.Payload is middleware that takes your resolver output (either an updated object or a changeset with errors) and converts into a Kronky Mutation Response (aka Payload).
+[Kronky.Payload](https://hexdocs.pm/kronky/Kronky.Payload.html#content) is middleware that takes your resolver output (either an updated object or a changeset with errors) and converts into a Kronky Mutation Response (aka Payload).
 
 Payloads have three fields
 
@@ -35,19 +35,19 @@ Payloads have three fields
 - `messages` - a list of validation errors. Always empty on success
 - `result` - the data object that was created/updated/deleted on success. Always nil when unsuccessful.
 
-Finally Kronky.TestHelper has some helper methods that make it easier to write ExUnit tests against your schema.
+Finally [Kronky.TestHelper](https://hexdocs.pm/kronky/Kronky.TestHelper.html#content) has some helper methods that make it easier to write ExUnit tests against your schema.
 
 ## Caveats
 
 Kronky **does not** currently support nested changesets/graphql objects. It'll probably die horribly if you try. If you need this feature, Kronky may not be for you.
 
 Kronky is very very tightly coupled to Ecto internals, which is probably not a good thing.
-Any change in how Ecto.Changeset stores/returns validation errors will likely break Kronky until I can update. Use with caution!
+Any change in how `Ecto.Changeset` stores/returns validation errors will likely break Kronky until I can update. Use with caution!
 
 ## Roadmap
 
  - Handle Nested Changesets/Objects
- - investigate identifying validations through `Changeset.validations` instead of matching on specific error texts.
+ - investigate identifying validations through `Ecto.Changeset.validations` instead of matching on specific error texts.
  - add tests for constraint validations (mock db?)
 
 If you find any issues, or have suggestions for improvements, please open an issue. PRs welcome. :)
