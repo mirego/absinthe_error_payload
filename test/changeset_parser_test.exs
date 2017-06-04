@@ -29,6 +29,18 @@ defmodule Kronky.ChangesetParserTest do
      cast(%Post{}, params, ~w(title body upvotes decimal topics virtual))
    end
 
+   describe "interpolate_message/1" do
+
+     test "interpolates correctly" do
+       result = ChangesetParser.interpolate_message({"Test %{one}", [one: "1"]})
+       assert "Test 1" == result
+
+       result = ChangesetParser.interpolate_message({"Test %{one}", %{one: "1"}})
+       assert "Test 1" == result
+     end
+
+   end
+
    describe "multiples" do
      test "multiple fields with errors" do
       changeset = %{"title" => "foobar", "virtual" => "foobar"} |> changeset()

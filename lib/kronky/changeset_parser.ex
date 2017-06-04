@@ -45,7 +45,7 @@ defmodule Kronky.ChangesetParser do
 
   ## Examples
 
-      iex> interpolate_message({"length should be between %{one} and %{two}", %{one: "1", two: "2", three: "3"}})
+      iex> interpolate_message({"length should be between %{one} and %{two}", [one: "1", two: "2", three: "3"]})
       "length should be between 1 and 2"
 
   """
