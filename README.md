@@ -56,7 +56,7 @@ If you find any issues, or have suggestions for improvements, please open an iss
 
 ## Ethelo
 
-Kronky is maintained and funded by [Ethelo](http://ethelo.com/). Ethelo focuses collective wisdom to find smart, practical and well-supported solutions to tough challenges. Learn about our corporate offings at http://ethelo.com/, and our social change efforts at http://ethelo.org/.
+Kronky is maintained and funded by [Ethelo](http://ethelo.com/). Ethelo focuses collective wisdom to find smart, practical and well-supported solutions to tough challenges. Learn about our corporate offerings at http://ethelo.com/, and our social change efforts at http://ethelo.org/.
 
 ## Why Kronky?
 

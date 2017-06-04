@@ -16,7 +16,7 @@ defmodule Kronky.TestHelper do
 
   ```elixir
   def evaluate_graphql(query) do
-    Absinthe.run(query, unquote(schema))
+    Absinthe.run(query, MySchema)
   end
   ```
   """
