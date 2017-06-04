@@ -41,6 +41,14 @@ defmodule Kronky.PayloadTest do
 
   describe "build_payload/2" do
 
+    test "validation message tuple" do
+      message = %ValidationMessage{code: :required}
+      resolution = resolution(message)
+      result = build_payload(resolution, nil)
+
+      assert_error_payload([message], result)
+    end
+
     test "error, validation message tuple" do
       message = %ValidationMessage{code: :required}
       resolution = resolution({:error, message})

@@ -78,6 +78,11 @@ defmodule Kronky.Payload do
     end
     ```
 
+    ## Alternate Use
+
+    If you'd prefer not to use the middleware style, you can generate Kronky payloads
+    in your resolver instead. See `success_payload/1` and `error_payload/1` for examples.
+
     """
 
   @enforce_keys [:successful]
@@ -90,7 +95,7 @@ defmodule Kronky.Payload do
   @doc """
   Create a payload object definition
 
-  Each object that can be mutated will need it's own graphql response object
+  Each object that can be mutated will need its own graphql response object
   in order to return typed responses.  This is a helper method to generate a
   custom payload object
 
@@ -145,31 +150,46 @@ defmodule Kronky.Payload do
   ```
 
   The build payload middleware will also accept error tuples with single or lists of
-  `Kronky.ValidationMessage` or string errors. However, these will need to be wrapped in
+  `Kronky.ValidationMessage` or string errors. However, lists and strings will need to be wrapped in
   an :ok tuple or they will be seen as errors by graphql.
 
   An example resolver could look like:
 
   ```
-  @doc "gets a user by id
+  @doc "
+  updates an existing user.
 
   Results are wrapped in a result monad as expected by absinthe.
   "
-  def get(%{id: id}, _resolution) do
+  def update(%{id: id, user: attrs}, _resolution) do
     case UserContext.get_user(id) do
-      nil -> {:ok, {:error, %ValidationMessage{key: :id, code: "not found", message: "does not exist"}}}
-      user -> {:ok, user}
+      nil -> {:ok, %ValidationMessage{key: :id, code: "not found", message: "does not exist"}}
+      user -> do_update_user(user, attrs)
+    end
+  end
+
+  defp do_update_user(user, attrs) do
+    case UserContext.update_user(user, attrs) do
+      {:ok, user} -> {:ok, user}
+      {:error, %Ecto.Changeset{} = changeset} -> {:ok, changeset}
     end
   end
   ```
 
   Valid formats are:
   ```
+  %ValidationMessage{}
   {:error, %ValidationMessage{}}
   {:error, [%ValidationMessage{},%ValidationMessage{}]}
   {:error, "This is an error"}
   {:error, ["This is an error", "This is another error"]}
   ```
+
+  ## Alternate Use
+
+  If you'd prefer not to use the middleware style, you can generate Kronky payloads
+  in your resolver instead. See `success_payload/1` and `error_payload/1` for examples.
+
   """
   def build_payload(%{value: value} = resolution, _config) do
     result = build_from_value(value)
@@ -177,6 +197,10 @@ defmodule Kronky.Payload do
   end
 
   defp build_from_value({:error, %ValidationMessage{} = message}) do
+    message |> error_payload
+  end
+
+  defp build_from_value(%ValidationMessage{} = message) do
     message |> error_payload
   end
 
@@ -203,6 +227,31 @@ defmodule Kronky.Payload do
       iex> error_payload([%ValidationMessage{code: "required", field: "name"}])
       %Payload{successful: false, messages: [%ValidationMessage{code: "required", field: "name"}]}
 
+  ## Usage
+
+  If you prefer not to use the Payload.middleware, you can use this method in your resolvers instead.
+
+  ```elixir
+
+  @doc "
+  updates an existing user.
+
+  Results are wrapped in a result monad as expected by absinthe.
+  "
+  def update(%{id: id, user: attrs}, _resolution) do
+    case UserContext.get_user(id) do
+      nil -> {:ok, error_payload([%ValidationMessage{key: :id, code: "not found", message: "does not exist"}])}
+      user -> do_update_user(user, attrs)
+    end
+  end
+
+  defp do_update_user(user, attrs) do
+    case UserContext.update_user(user, attrs) do
+      {:ok, user} -> {:ok, success_payload(user)}
+      {:error, %Ecto.Changeset{} = changeset} -> {:ok, error_payload(changeset)}
+    end
+  end
+  ```
   """
   def error_payload(%ValidationMessage{} = message), do: error_payload([message])
   def error_payload(messages) when is_list(messages) do
@@ -238,6 +287,24 @@ defmodule Kronky.Payload do
 
       iex> success_paylaod(%User{first_name: "Stich", last_name: "Pelekai", id: 626})
       %Payload{successful: true, result: %User{first_name: "Stich", last_name: "Pelekai", id: 626}}
+
+  ## Usage
+
+  If you prefer not to use the `build_payload/2` middleware, you can use this method in your resolvers instead.
+
+  ```elixir
+  @doc "
+  Creates a new user
+
+  Results are wrapped in a result monad as expected by absinthe.
+  "
+  def create(%{user: attrs}, _resolution) do
+    case UserContext.create_user(attrs) do
+      {:ok, user} -> {ok, success_payload(user)}
+      {:error, %Ecto.Changeset{} = changeset} -> {:ok, error_payload(changeset)}
+    end
+  end
+  ```
 
   """
   def success_payload(result) do
