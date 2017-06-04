@@ -50,7 +50,6 @@ defmodule Kronky.Mixfile do
       {:timex_ecto, "~> 3.0"},
       {:credo, "~> 0.7.4", only: [:dev, :test]},
       {:excoveralls, "~> 0.6", only: :test},
-      {:inflex, "~> 1.8.1"},
       {:ex_doc, "~> 0.14", only: :dev, runtime: false}
     ]
   end

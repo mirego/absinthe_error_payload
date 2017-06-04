@@ -214,7 +214,7 @@ defmodule Kronky.Payload do
   def convert_key(%ValidationMessage{} = message) do
     key = case message.key do
       nil -> nil
-      key -> Inflex.camelize(key, :lower)
+      key -> key |> to_string() |> Absinthe.Utils.camelize(lower: true)
     end
     %{message | key: key}
   end

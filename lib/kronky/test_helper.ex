@@ -4,7 +4,6 @@ defmodule Kronky.TestHelper do
 
   """
 
-  require Inflex
   import ExUnit.Assertions
   require Logger
 
@@ -87,7 +86,7 @@ defmodule Kronky.TestHelper do
     Timex.compare(Timex.parse(first, "{ISO:Extended}"), Timex.parse(second, "{ISO:Extended}"))
   end
 
-  defp camelize(v), do: Inflex.camelize(v, :lower)
+  defp camelize(v), do: v |> to_string() |> Absinthe.Utils.camelize(lower: true)
 
   defp expected_value(field, expected), do: expected["#{field}"]
   defp response_value(field, response), do: response["#{camelize(field)}"]
