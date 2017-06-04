@@ -257,11 +257,11 @@ defmodule Kronky.TestHelper do
     assert %{"updateUser" => payload} = data
 
     expected = %ValidationMessage{
-      code: :greater_than, key: :firstName, message: "must be greater than 0"
+      code: :greater_than, key: :age, message: "must be greater than 0"
     }
 
     assert_mutation_failure([expected], payload, [:field, :message, :code])
-  ```  
+  ```
   """
   def assert_mutation_failure(expected, payload, only \\ nil) do
     assert payload["successful"] == false
