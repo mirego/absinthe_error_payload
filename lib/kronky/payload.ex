@@ -285,7 +285,7 @@ defmodule Kronky.Payload do
 
   ## Examples
 
-      iex> success_paylaod(%User{first_name: "Stich", last_name: "Pelekai", id: 626})
+      iex> success_payload(%User{first_name: "Stich", last_name: "Pelekai", id: 626})
       %Payload{successful: true, result: %User{first_name: "Stich", last_name: "Pelekai", id: 626}}
 
   ## Usage

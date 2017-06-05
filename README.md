@@ -13,7 +13,7 @@ Install by adding `kronky` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
-  [{:kronky, "~> 0.2.0"}]
+  [{:kronky, "~> 0.2.1"}]
 end
 ```
 
@@ -27,7 +27,7 @@ Here's a quick summary of what Kronky includes
 
 Kronky includes a [schema](https://hexdocs.pm/kronky/Kronky.ValidationMessageTypes.html#content) definition to add ValidationMessages to your schema.
 
-[Kronky.Payload](https://hexdocs.pm/kronky/Kronky.Payload.html#content) is middleware that takes your resolver output (either an updated object or a changeset with errors) and converts into a Kronky Mutation Response (aka Payload).
+[Kronky.Payload](https://hexdocs.pm/kronky/Kronky.Payload.html#content) is middleware that takes your resolver output (either an updated object or a changeset with errors) and converts it into a Kronky Mutation Response (aka Payload).
 
 Payloads have three fields
 
