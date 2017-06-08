@@ -1,4 +1,14 @@
 
+v0.2.2 (2017-06-08)
+
+### BugFixes
+
+  * fix Bug where field names were not showing up in graphql responses due to :key vs :field differences
+
+### Enhancements
+  * improve messages on failure within assert_mutation_error and assert_mutation_success
+  * Various doc improvements + typo fixes
+
 v0.2.1 (2017-06-04)
 
 ### BugFixes
