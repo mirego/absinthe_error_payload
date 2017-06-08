@@ -35,7 +35,8 @@ defmodule Kronky.PayloadTest do
 
     for message <- messages do
       message = convert_field_name(message)
-      assert message in value.messages
+      assert Enum.find_value(value.messages, &(message == &1)),
+        "Expected to find \n#{inspect(message)}\n in \n#{inspect(value.messages)}"
     end
   end
 
