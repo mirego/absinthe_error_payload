@@ -163,7 +163,7 @@ defmodule Kronky.Payload do
   "
   def update(%{id: id, user: attrs}, _resolution) do
     case UserContext.get_user(id) do
-      nil -> {:ok, %ValidationMessage{key: :id, code: "not found", message: "does not exist"}}
+      nil -> {:ok, %ValidationMessage{field: :id, code: "not found", message: "does not exist"}}
       user -> do_update_user(user, attrs)
     end
   end
@@ -240,7 +240,7 @@ defmodule Kronky.Payload do
   "
   def update(%{id: id, user: attrs}, _resolution) do
     case UserContext.get_user(id) do
-      nil -> {:ok, error_payload([%ValidationMessage{key: :id, code: "not found", message: "does not exist"}])}
+      nil -> {:ok, error_payload([%ValidationMessage{field: :id, code: "not found", message: "does not exist"}])}
       user -> do_update_user(user, attrs)
     end
   end
@@ -259,17 +259,23 @@ defmodule Kronky.Payload do
     %Payload{successful: false, messages: messages}
   end
 
-  @doc "convert validation message key to camelCase format used by graphQL"
-  def convert_key(%ValidationMessage{} = message) do
-    key = case message.key do
-      nil -> nil
-      key -> key |> to_string() |> Absinthe.Utils.camelize(lower: true)
+  @doc "convert validation message field to camelCase format used by graphQL"
+  def convert_field_name(%ValidationMessage{} = message) do
+    field = cond do
+      message.field == nil -> camelized_name(message.key)
+      message.key == nil -> camelized_name(message.field)
+      true -> camelized_name(message.field)
     end
-    %{message | key: key}
+    %{message | field: field, key: field}
+  end
+
+  defp camelized_name(nil), do: nil
+  defp camelized_name(field) do
+    field |> to_string() |> Absinthe.Utils.camelize(lower: true)
   end
 
   defp prepare_message(%ValidationMessage{} = message) do
-    convert_key(message)
+    convert_field_name(message)
   end
 
   defp prepare_message(message) when is_binary(message) do
@@ -313,7 +319,7 @@ defmodule Kronky.Payload do
 
   defp generic_validation_message(message) do
     %ValidationMessage{
-      code: :unknown, key: nil, template: message, message: message, options: []
+      code: :unknown, field: nil, template: message, message: message, options: []
     }
   end
 

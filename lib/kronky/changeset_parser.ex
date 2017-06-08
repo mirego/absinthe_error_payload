@@ -29,6 +29,7 @@ defmodule Kronky.ChangesetParser do
   defp construct_message(_changeset, field, {message, opts}) do
     %ValidationMessage{
       code: to_code({message, opts}),
+      field: field,
       key: field,
       template: message,
       message: interpolate_message({message, opts}),

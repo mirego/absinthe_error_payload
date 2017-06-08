@@ -34,7 +34,7 @@ defmodule Kronky.PayloadTest do
     assert expected.result == value.result
 
     for message <- messages do
-      message = convert_key(message)
+      message = convert_field_name(message)
       assert message in value.messages
     end
   end
@@ -88,9 +88,9 @@ defmodule Kronky.PayloadTest do
       result = build_payload(resolution, nil)
 
       messages = [
-        %ValidationMessage{code: :unknown, message: "error 1", template: "error 1", key: :title},
-        %ValidationMessage{code: :unknown, message: "error 2", template: "error 2", key: :title},
-        %ValidationMessage{code: :unknown, message: "error 3", template: "error 3", key: :titleLang},
+        %ValidationMessage{code: :unknown, message: "error 1", template: "error 1", field: :title, key: :title},
+        %ValidationMessage{code: :unknown, message: "error 2", template: "error 2", field: :title, key: :title},
+        %ValidationMessage{code: :unknown, message: "error 3", template: "error 3", field: :titleLang, key: :titleLang},
       ]
 
       assert_error_payload(messages, result)

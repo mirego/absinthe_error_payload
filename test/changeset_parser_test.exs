@@ -49,8 +49,8 @@ defmodule Kronky.ChangesetParserTest do
 
       result = ChangesetParser.extract_messages(changeset)
       assert [first, second] = result
-      assert %ValidationMessage{code: :format, key: :title} = first
-      assert %ValidationMessage{code: :length, key: :virtual} = second
+      assert %ValidationMessage{code: :format, field: :title, key: :title} = first
+      assert %ValidationMessage{code: :length, field: :virtual, key: :virtual} = second
     end
 
     test "multiple errors on one field" do
@@ -60,8 +60,8 @@ defmodule Kronky.ChangesetParserTest do
 
      result = ChangesetParser.extract_messages(changeset)
      assert [first, second] = result
-     assert %ValidationMessage{code: :length, key: :title} = first
-     assert %ValidationMessage{code: :format, key: :title} = second
+     assert %ValidationMessage{code: :length, field: :title, key: :title} = first
+     assert %ValidationMessage{code: :format, field: :title, key: :title} = second
    end
   end
 
@@ -73,6 +73,7 @@ defmodule Kronky.ChangesetParserTest do
        assert [%ValidationMessage{} = message] = ChangesetParser.extract_messages(changeset)
        assert message.code == "foobar"
        assert message.key == :title
+       assert message.field == :title
        assert message.options == [illegal: "foobar"]
        assert message.message  =~ ~r/foobar/
        assert message.template =~ ~r/%{illegal}/
@@ -85,6 +86,7 @@ defmodule Kronky.ChangesetParserTest do
        assert [%ValidationMessage{} = message] = ChangesetParser.extract_messages(changeset)
        assert message.code == :unknown
        assert message.key == :title
+       assert message.field == :title
        assert message.options == [illegal: "foobar"]
        assert message.message  =~ ~r/foobar/
        assert message.template =~ ~r/%{illegal}/
@@ -97,6 +99,7 @@ defmodule Kronky.ChangesetParserTest do
       assert [%ValidationMessage{} = message] = ChangesetParser.extract_messages(changeset)
       assert message.code == :format
       assert message.key == :title
+      assert message.field == :title
       assert message.options == []
       assert message.message != ""
       assert message.template != ""
@@ -109,6 +112,7 @@ defmodule Kronky.ChangesetParserTest do
      assert [%ValidationMessage{} = message] = ChangesetParser.extract_messages(changeset)
      assert message.code == :inclusion
      assert message.key == :title
+     assert message.field == :title
      assert message.options == []
      assert message.message != ""
      assert message.template != ""
@@ -121,6 +125,7 @@ defmodule Kronky.ChangesetParserTest do
       assert [%ValidationMessage{} = message] = ChangesetParser.extract_messages(changeset)
       assert message.code == :subset
       assert message.key == :topics
+      assert message.field == :topics
       assert message.options == []
       assert message.message != ""
       assert message.template != ""
@@ -133,6 +138,7 @@ defmodule Kronky.ChangesetParserTest do
       assert [%ValidationMessage{} = message] = ChangesetParser.extract_messages(changeset)
       assert message.code == :exclusion
       assert message.key == :title
+      assert message.field == :title
       assert message.options == []
       assert message.message != ""
       assert message.template != ""
@@ -145,6 +151,7 @@ defmodule Kronky.ChangesetParserTest do
       assert [%ValidationMessage{} = message] = ChangesetParser.extract_messages(changeset)
       assert message.code == :min
       assert message.key == :title
+      assert message.field == :title
       assert message.options == [count: 2]
       assert message.message  =~ ~r/2/
       assert message.template =~ ~r/%{count}/
@@ -157,6 +164,7 @@ defmodule Kronky.ChangesetParserTest do
       assert [%ValidationMessage{} = message] = ChangesetParser.extract_messages(changeset)
       assert message.code == :max
       assert message.key == :title
+      assert message.field == :title
       assert message.options == [count: 3]
       assert message.message =~ ~r/3/
       assert message.template =~ ~r/%{count}/
@@ -169,6 +177,7 @@ defmodule Kronky.ChangesetParserTest do
       assert [%ValidationMessage{} = message] = ChangesetParser.extract_messages(changeset)
       assert message.code == :length
       assert message.key == :title
+      assert message.field == :title
       assert message.options == [count: 7]
       assert message.message =~ ~r/7/
       assert message.template =~ ~r/%{count}/
@@ -181,6 +190,7 @@ defmodule Kronky.ChangesetParserTest do
       assert [%ValidationMessage{} = message] = ChangesetParser.extract_messages(changeset)
       assert message.code == :greater_than
       assert message.key == :upvotes
+      assert message.field == :upvotes
       assert message.options == [number: 10]
       assert message.message =~ ~r/10/
       assert message.template =~ ~r/%{number}/
@@ -194,6 +204,7 @@ defmodule Kronky.ChangesetParserTest do
       assert [%ValidationMessage{} = message] = ChangesetParser.extract_messages(changeset)
       assert message.code == :greater_than_or_equal_to
       assert message.key == :upvotes
+      assert message.field == :upvotes
       assert message.options == [number: 10]
       assert message.message  =~ ~r/10/
       assert message.template =~ ~r/%{number}/
@@ -206,6 +217,7 @@ defmodule Kronky.ChangesetParserTest do
       assert [%ValidationMessage{} = message] = ChangesetParser.extract_messages(changeset)
       assert message.code == :less_than
       assert message.key == :upvotes
+      assert message.field == :upvotes
       assert message.options == [number: 1]
       assert message.message  =~ ~r/1/
       assert message.template =~ ~r/%{number}/
@@ -219,6 +231,7 @@ defmodule Kronky.ChangesetParserTest do
       assert [%ValidationMessage{} = message] = ChangesetParser.extract_messages(changeset)
       assert message.code == :less_than_or_equal_to
       assert message.key == :upvotes
+      assert message.field == :upvotes
       assert message.options == [number: 1]
       assert message.message  =~ ~r/1/
       assert message.template =~ ~r/%{number}/
@@ -231,6 +244,7 @@ defmodule Kronky.ChangesetParserTest do
       assert [%ValidationMessage{} = message] = ChangesetParser.extract_messages(changeset)
       assert message.code == :equal_to
       assert message.key == :upvotes
+      assert message.field == :upvotes
       assert message.options == [number: 1]
       assert message.message  =~ ~r/1/
       assert message.template =~ ~r/%{number}/
@@ -244,6 +258,7 @@ defmodule Kronky.ChangesetParserTest do
       assert [%ValidationMessage{} = message] = ChangesetParser.extract_messages(changeset)
       assert message.code == :confirmation
       assert message.key == :title_confirmation
+      assert message.field == :title_confirmation
       assert message.options == []
       assert message.message != ""
       assert message.template != ""
@@ -256,6 +271,7 @@ defmodule Kronky.ChangesetParserTest do
       assert [%ValidationMessage{} = message] = ChangesetParser.extract_messages(changeset)
       assert message.code == :acceptance
       assert message.key == :terms_of_service
+      assert message.field == :terms_of_service
       assert message.options == []
       assert message.message != ""
       assert message.template != ""
@@ -268,6 +284,7 @@ defmodule Kronky.ChangesetParserTest do
       assert [%ValidationMessage{} = message] = ChangesetParser.extract_messages(changeset)
       assert message.code == :required
       assert message.key == :title
+      assert message.field == :title
       assert message.options == []
       assert message.message != ""
       assert message.template != ""
@@ -282,6 +299,7 @@ defmodule Kronky.ChangesetParserTest do
       assert [%ValidationMessage{} = message] = ChangesetParser.extract_messages(changeset)
       assert message.code == :cast
       assert message.key == :body
+      assert message.field == :body
       assert message.options == [type: :string]
       assert message.message  != ""
       assert message.template != ""

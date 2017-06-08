@@ -79,17 +79,16 @@ defmodule Kronky.TestHelperTest do
 
     test "matches messages" do
 
-
       mutation_response = %{
         "successful" => false,
         "messages" => [
-          %{"key" => "", "options" => [], "code" => "unknown", "message" => "an error", "template" => "an error"}
+          %{"key" => "test", "field" => "test", "options" => [], "code" => "unknown", "message" => "an error", "template" => "an error"}
           ],
         "result" => nil
       }
 
       message = %ValidationMessage{code: :unknown, message: "an error", template: "an error"}
-      assert_mutation_failure([message], mutation_response)
+      assert_mutation_failure([message], mutation_response, [:code, :message, :template])
 
     end
 

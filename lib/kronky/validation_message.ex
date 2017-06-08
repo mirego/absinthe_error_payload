@@ -5,11 +5,11 @@ defmodule Kronky.ValidationMessage do
   ## Fields
 
   ### :field
-  The input field that the error applies to. The key can be used to
+  The input field that the error applies to. The field can be used to
   identify which field the error message should be displayed next to in the
   presentation layer.
 
-  If there are multiple errors to display for a key, multiple validation
+  If there are multiple errors to display for a field, multiple validation
   messages will be in the result.
 
   This field may be nil in cases where an error cannot be applied to a specific field.
@@ -34,8 +34,10 @@ defmodule Kronky.ValidationMessage do
   ### :options
   A Keyword List of substitutions to be applied to a validation message template.
 
+  ### :key
+  Deprecated, use :field instead
   """
   @enforce_keys [:code]
-  defstruct [key: nil, code: nil, options: [], template: "is invalid", message: "is invalid"]
+  defstruct [field: nil, key: nil, code: nil, options: [], template: "is invalid", message: "is invalid"]
 
 end

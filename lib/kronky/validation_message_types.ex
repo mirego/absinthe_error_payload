@@ -58,11 +58,11 @@ defmodule Kronky.ValidationMessageTypes do
       to be returned in the same manner as other validations. The only exceptions
       are id fields, which may be required to perform updates or deletes.
     """  ,
-    field: "The input field that the error applies to. The key can be used to
+    field: "The input field that the error applies to. The field can be used to
     identify which field the error message should be displayed next to in the
     presentation layer.
 
-    If there are multiple errors to display for a key, multiple validation
+    If there are multiple errors to display for a field, multiple validation
     messages will be in the result.
 
     This field may be null in cases where an error cannot be applied to a specific field.
