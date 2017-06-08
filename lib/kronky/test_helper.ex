@@ -206,14 +206,13 @@ defmodule Kronky.TestHelper do
     user_fields = %{first_name: :string, last_name: string, age: integer}
     expected = %User{first_name: "Lilo", last_name: "Pelekai", age: 6}
     assert_mutation_success(expected, payload, user_fields)
-    refute nil = Repo.get(User, payload["result"]["id"])
-
+    assert %User{} = Repo.get(User, payload["result"]["id"])
   ```
 
   """
   def assert_mutation_success(expected, payload, %{} = fields) do
-    assert payload["successful"] == true
-    assert payload["messages"] == []
+    assert %{"successful" => true} = payload
+    refute nil == payload["result"]
 
     assert_equivalent_graphql(expected, payload["result"], fields)
   end
@@ -264,8 +263,8 @@ defmodule Kronky.TestHelper do
   ```
   """
   def assert_mutation_failure(expected, payload, only \\ nil) do
-    assert payload["successful"] == false
-    assert payload["result"] == nil
+    assert %{"successful" => false} = payload
+    assert %{"result" => nil} = payload
 
     assert_equivalent_graphql(expected, payload["messages"], validation_message_fields(only))
   end
