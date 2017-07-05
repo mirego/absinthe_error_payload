@@ -113,6 +113,11 @@ defmodule Kronky.TestHelper do
     assert {field, float_value} == {field, response}
   end
 
+  defp assert_values_match({field, :nillable, expected, response}) do
+    expected = if expected == "", do: nil, else: expected
+    assert {field, expected} == {field, response}
+  end
+
   defp assert_values_match({field, _type, expected, response}) do
     assert {field, expected} == {field, response}
   end
