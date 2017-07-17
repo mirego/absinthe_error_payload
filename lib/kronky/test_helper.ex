@@ -28,6 +28,7 @@ defmodule Kronky.TestHelper do
     end
   end
 
+
   @doc """
   Returns a map with all keys and values set to strings, which is close to how the
   raw graphql result is returned.
@@ -38,6 +39,9 @@ defmodule Kronky.TestHelper do
 
   Associations are returned as "association" if not preloaded.
   """
+  def to_stringified_map(%DateTime{} = fixture), do: to_string(fixture)
+  def to_stringified_map(%NaiveDateTime{} = fixture), do: to_string(fixture)
+
   def to_stringified_map(%{__struct__: _} = fixture) do
     fixture
     |> Map.from_struct
@@ -56,9 +60,12 @@ defmodule Kronky.TestHelper do
     |> Enum.map(&to_stringified_map/1)
   end
 
+  def to_stringified_map(nil), do: ""
+
   def to_stringified_map(other), do: "#{other}"
 
   defp stringify_key_and_value({k, %DateTime{} = v}), do: {"#{k}", "#{v}"}
+  defp stringify_key_and_value({k, %NaiveDateTime{} = v}), do: {"#{k}", NaiveDateTime.to_string(v)}
   defp stringify_key_and_value({k, %Ecto.Association.NotLoaded{}}), do: {"#{k}", "association"}
   defp stringify_key_and_value({k, true}), do: {"#{k}", "true"}
   defp stringify_key_and_value({k, false}), do: {"#{k}", "false"}
@@ -77,7 +84,7 @@ defmodule Kronky.TestHelper do
   defp stringify_key_and_value({k, v}) when is_atom(v), do: {"#{k}", "#{v}"}
 
   defp stringify_key_and_value({k, v}) do
-    #Logger.warn("unknown type to stringify: #{inspect(k)} #{inspect(v)}")
+    #Logger.warn("unknown type to stringify: key #{inspect(k)}  value #{inspect(v)}")
     {"#{k}", "#{v}"}
   end
 
@@ -88,11 +95,21 @@ defmodule Kronky.TestHelper do
 
   defp camelize(v), do: v |> to_string() |> Absinthe.Utils.camelize(lower: true)
 
-  defp expected_value(field, expected), do: expected["#{field}"]
-  defp response_value(field, response), do: response["#{camelize(field)}"]
+  defp expected_value(field, expected), do: Map.get(expected, "#{field}")
+  defp response_value(field, response), do: Map.get(response, "#{camelize(field)}")
 
   defp value_tuple({field, type}, expected, response) do
     {field, type, expected_value(field, expected), response_value(field, response)}
+  end
+
+  defp assert_values_match({field, _, nil, response}) do
+    assert {field, nil} == {field, response}
+  end
+
+  defp assert_values_match({_, _, "", nil}), do: nil
+
+  defp assert_values_match({_field, :date, expected, nil}) do
+    assert Timex.parse(expected, "{ISO:Extended}") == nil
   end
 
   defp assert_values_match({_field, :date, expected, response}) do
@@ -166,6 +183,7 @@ defmodule Kronky.TestHelper do
 
   def assert_equivalent_graphql(expected, response, %{} = fields) when is_map(expected) do
     stringified = to_stringified_map(expected)
+
 
     fields
     |> Enum.to_list

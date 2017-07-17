@@ -8,40 +8,74 @@ defmodule Kronky.TestHelperTest do
   alias Kronky.ValidationMessage
 
   @time DateTime.utc_now
+  @naive NaiveDateTime.utc_now
   def fields() do
     %{
       date: :date,
+      naive: :date,
       string: :string,
       integer: :integer,
       float: :float,
       boolean1: :boolean,
       boolean2: :boolean,
       enum: :enum,
+      nillable1: :nillable,
+      nillable2: :nillable,
     }
   end
 
   def input() do
     %{
       date: @time,
+      naive: @naive,
       string: "foo bar baz",
       integer: 23,
       float: 10.32,
       boolean1: false,
       boolean2: true,
       enum: "faa",
+      nillable1: nil,
+      nillable2: "beez",
+    }
+  end
+
+  def nil_input() do
+    %{
+      date: nil,
+      naive: nil,
+      string: nil,
+      integer: nil,
+      float: nil,
+      boolean1: nil,
+      enum: nil,
     }
 
   end
 
   def graphql() do
     %{
-     "date" => to_string(@time),
-     "string" => "foo bar baz",
-     "integer" => 23,
-     "float" => 10.32,
-     "boolean1" => "false",
-     "boolean2" => "true",
-     "enum" => "FAA",
+      "date" => to_string(@time),
+      "naive" => to_string(@naive),
+      "string" => "foo bar baz",
+      "integer" => 23,
+      "float" => 10.32,
+      "boolean1" => "false",
+      "boolean2" => "true",
+      "enum" => "FAA",
+      "nillable1" => nil,
+      "nillable2" => "beez",
+   }
+  end
+
+  def nil_graphql() do
+    %{
+      "date" => nil,
+      "naive" => nil,
+      "string" => nil,
+      "integer" => nil,
+      "float" => nil,
+      "boolean1" => nil,
+      "enum" => nil,
    }
   end
 
@@ -50,6 +84,10 @@ defmodule Kronky.TestHelperTest do
 
     test "all types compare" do
       assert_equivalent_graphql(input(), graphql(), fields())
+    end
+
+    test "nil compare" do
+      assert_equivalent_graphql(nil_input(), nil_graphql(), fields())
     end
 
     test "list compare" do
@@ -93,7 +131,6 @@ defmodule Kronky.TestHelperTest do
     end
 
     test "matches partial messages" do
-
 
       mutation_response = %{
         "successful" => false,
