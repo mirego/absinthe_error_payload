@@ -21,12 +21,30 @@ defmodule Kronky.ChangesetParser do
   "
   def extract_messages(changeset) do
     changeset
-    |> traverse_errors(&construct_message/3)
+    |> traverse_errors(&construct_traversed_message/3)
     |> Enum.to_list
     |> Enum.flat_map(fn({_field, values}) -> values end)
   end
 
-  defp construct_message(_changeset, field, {message, opts}) do
+  defp construct_traversed_message(_changeset, field, {message, opts}) do
+    construct_message(field, {message, opts})
+  end
+
+  @doc "Generate a single `Kronky.ValidationMessage` struct from a changeset.
+
+  This method is designed to be used with `Ecto.Changeset.traverse_errors` to generate a map of structs.
+
+  ## Examples
+    ```
+    error_map = Changeset.traverse_errors(fn(changeset, field, error) ->
+      Kronky.ChangesetParser.construct_message(field, error)
+    end)
+    error_list = Enum.flat_map(error_map, fn({_, messages}) -> messages end)
+
+    ```
+  "
+  def construct_message(field, error_tuple)
+  def construct_message(field, {message, opts}) do
     %ValidationMessage{
       code: to_code({message, opts}),
       field: field,

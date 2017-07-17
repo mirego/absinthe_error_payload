@@ -65,6 +65,23 @@ defmodule Kronky.ChangesetParserTest do
    end
   end
 
+  describe "construct_message/2" do
+    test "creates expected struct" do
+      message = "can't be %{illegal}"
+      options = [code: "foobar", illegal: "foobar"]
+
+      message = ChangesetParser.construct_message(:title, {message, options})
+
+      assert %ValidationMessage{} = message
+      assert message.code == "foobar"
+      assert message.key == :title
+      assert message.field == :title
+      assert message.options == [illegal: "foobar"]
+      assert message.message  =~ ~r/foobar/
+      assert message.template =~ ~r/%{illegal}/
+    end
+  end
+
   describe "validations" do
     test "custom with code" do
        changeset = %{"title" => "foobar"} |> changeset()
