@@ -1,4 +1,14 @@
 
+v0.3.0 (2017-07-17)
+
+### Enhancements
+  * nil values can be compared for all types
+  * convert_message is now public and can be used to generate ValidationMessages through `Ecto.Changeset.traverse_errors`
+
+### BugFixes
+
+  * fix issue with NaiveDateTime values not comparing properly
+
 v0.2.3 (2017-07-05)
 
 ### Enhancements

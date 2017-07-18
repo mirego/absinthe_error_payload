@@ -13,7 +13,7 @@ Install by adding `kronky` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
-  [{:kronky, "~> 0.2.3"}]
+  [{:kronky, "~> 0.3.0"}]
 end
 ```
 
