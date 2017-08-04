@@ -67,8 +67,8 @@ defmodule Kronky.TestHelper do
   defp stringify_key_and_value({k, %DateTime{} = v}), do: {"#{k}", "#{v}"}
   defp stringify_key_and_value({k, %NaiveDateTime{} = v}), do: {"#{k}", NaiveDateTime.to_string(v)}
   defp stringify_key_and_value({k, %Ecto.Association.NotLoaded{}}), do: {"#{k}", "association"}
-  defp stringify_key_and_value({k, true}), do: {"#{k}", "true"}
-  defp stringify_key_and_value({k, false}), do: {"#{k}", "false"}
+  defp stringify_key_and_value({k, true}), do: {"#{k}", true}
+  defp stringify_key_and_value({k, false}), do: {"#{k}", false}
   defp stringify_key_and_value({k, nil}), do: {"#{k}", ""}
 
   defp stringify_key_and_value({k, v}) when is_map(v) do
@@ -132,6 +132,10 @@ defmodule Kronky.TestHelper do
 
   defp assert_values_match({field, :nillable, expected, response}) do
     expected = if expected == "", do: nil, else: expected
+    assert {field, expected} == {field, response}
+  end
+
+  defp assert_values_match({field, :boolean, expected, response}) do
     assert {field, expected} == {field, response}
   end
 
