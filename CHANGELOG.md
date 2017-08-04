@@ -1,4 +1,13 @@
 
+v0.4.0 (2017-07-17)
+
+### Enhancements
+  * `Payload.convert_to_payload` is now public and can be used to generate payloads in the same manner as the `build_payload` middleware
+
+### BugFixes
+
+  * fix issue with Boolean values not comparing properly
+
 v0.3.0 (2017-07-17)
 
 ### Enhancements
