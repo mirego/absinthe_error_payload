@@ -101,7 +101,7 @@ defmodule Kronky.Payload do
 
   ## Usage
 
-      payload_object(:user_payload, :user)
+    payload_object(:user_payload, :user)
 
   is the equivalent of
 
@@ -188,33 +188,71 @@ defmodule Kronky.Payload do
   ## Alternate Use
 
   If you'd prefer not to use the middleware style, you can generate Kronky payloads
-  in your resolver instead. See `success_payload/1` and `error_payload/1` for examples.
+  in your resolver instead. See `convert_to_payload/1`, `success_payload/1` and `error_payload/1` for examples.
 
   """
   def build_payload(%{value: value} = resolution, _config) do
-    result = build_from_value(value)
+    result = convert_to_payload(value)
     Absinthe.Resolution.put_result(resolution, {:ok, result})
   end
 
-  defp build_from_value({:error, %ValidationMessage{} = message}) do
+  @doc """
+  Direct converter from value to a `Payload` struct.
+
+  This function will automatically transform an invalid changeset into validation errors.
+
+  Changesets, error tuples and lists of `Kronky.ValidationMessage` will be identified
+  as errors and will generate an error payload.
+
+  Error formats are:
+  ```
+  %Ecto.Changeset{valid?: false}
+  %ValidationMessage{}
+  {:error, %ValidationMessage{}}
+  {:error, [%ValidationMessage{},%ValidationMessage{}]}
+  {:error, "This is an error"}
+  {:error, ["This is an error", "This is another error"]}
+  ```
+
+  All other values will be converted to a success payload.
+  or string errors. However, lists and strings will need to be wrapped in
+  an :ok tuple or they will be seen as errors by graphql.
+
+  An example use could look like:
+
+  ```
+  @doc "
+  Load a user matching an id
+
+  Results are wrapped in a result monad as expected by absinthe.
+  "
+  def get_user(%{id: id}, _resolution) do
+    case UserContext.get_user(id) do
+      nil -> %ValidationMessage{field: :id, code: "not found", message: "does not exist"}}
+      user -> user
+    end
+    |> Kronky.Payload.convert_to_payload()
+  end
+  """
+  def convert_to_payload({:error, %ValidationMessage{} = message}) do
     message |> error_payload
   end
 
-  defp build_from_value(%ValidationMessage{} = message) do
+  def convert_to_payload(%ValidationMessage{} = message) do
     message |> error_payload
   end
 
-  defp build_from_value({:error, message}) when is_binary(message) do
+  def convert_to_payload({:error, message}) when is_binary(message) do
     message |> generic_validation_message() |> error_payload
   end
 
-  defp build_from_value({:error, list}) when is_list(list), do: error_payload(list)
+  def convert_to_payload({:error, list}) when is_list(list), do: error_payload(list)
 
-  defp build_from_value(%Ecto.Changeset{valid?: false} = changeset) do
+  def convert_to_payload(%Ecto.Changeset{valid?: false} = changeset) do
     changeset |> extract_messages() |> error_payload
   end
 
-  defp build_from_value(value), do: success_payload(value)
+  def convert_to_payload(value), do: success_payload(value)
 
   @doc """
   Generates a mutation error payload.
