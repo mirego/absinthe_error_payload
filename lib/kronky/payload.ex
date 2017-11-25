@@ -191,8 +191,25 @@ defmodule Kronky.Payload do
   in your resolver instead. See `convert_to_payload/1`, `success_payload/1` and `error_payload/1` for examples.
 
   """
-  def build_payload(%{value: value} = resolution, _config) do
+  def build_payload(%{value: value, errors: []} = resolution, _config) do
     result = convert_to_payload(value)
+    Absinthe.Resolution.put_result(resolution, {:ok, result})
+  end
+
+  @doc """
+  Convert resolution errors to a mutation payload
+
+  The build payload middleware will accept lists of `Kronky.ValidationMessage` or string errors.
+
+  Valid formats are:
+  ```
+  [%ValidationMessage{},%ValidationMessage{}]
+  "This is an error"
+  ["This is an error", "This is another error"]
+  ```
+  """
+  def build_payload(%{errors: errors} = resolution, _config) do
+    result = convert_to_payload({:error, errors})
     Absinthe.Resolution.put_result(resolution, {:ok, result})
   end
 
