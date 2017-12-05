@@ -17,6 +17,13 @@ defmodule Kronky.PayloadTest do
     }
   end
 
+  defp resolution_error(error) do
+    %Resolution{
+      errors: error,
+      adapter: "", context: "", root_value: "", schema: "", source: ""
+    }
+  end
+
   def payload(successful, messages \\ [], result \\ nil) do
     %Payload{
       successful: successful,
@@ -121,6 +128,44 @@ defmodule Kronky.PayloadTest do
       assert value.successful == true
       assert value.messages == []
       assert value.result == map
+    end
+
+    test "error from resolution, validation message" do
+      message = %ValidationMessage{code: :required}
+      resolution = resolution_error([message])
+      result = build_payload(resolution, nil)
+
+      assert_error_payload([message], result)
+    end
+
+    test "error from resolution, string message" do
+      resolution = resolution_error(["an error"])
+      result = build_payload(resolution, nil)
+
+      message = %ValidationMessage{code: :unknown, message: "an error", template: "an error"}
+      assert_error_payload([message], result)
+    end
+
+    test "error from resolution, string message list" do
+      resolution = resolution_error(["an error", "another error"])
+      result = build_payload(resolution, nil)
+
+      messages = [
+        %ValidationMessage{code: :unknown, message: "an error", template: "an error"},
+        %ValidationMessage{code: :unknown, message: "another error", template: "another error"}
+      ]
+      assert_error_payload(messages, result)
+    end
+
+    test "error from resolution, error list" do
+      messages = [%ValidationMessage{code: :required}, %ValidationMessage{code: :max}]
+      resolution = resolution_error(messages)
+
+      result = build_payload(resolution, nil)
+
+      assert %{value: value} = result
+
+      assert_error_payload(messages, result)
     end
 
   end
