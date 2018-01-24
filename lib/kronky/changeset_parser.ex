@@ -23,12 +23,26 @@ defmodule Kronky.ChangesetParser do
     changeset
     |> traverse_errors(&construct_traversed_message/3)
     |> Enum.to_list
-    |> Enum.flat_map(fn({_field, values}) -> values end)
+    |> Enum.flat_map(&handle_nested_errors/1)
   end
+
+  defp handle_nested_errors({parent_field, values}) when is_map(values) do
+    Enum.flat_map(values, fn({field, value}) ->
+      handle_nested_errors({construct_field(parent_field, field), value})
+    end)
+  end
+
+  defp handle_nested_errors({field, values}) when is_list(values) do
+    Enum.map(values, fn(value) -> %{value | field: field} end)
+  end
+
+  defp handle_nested_errors({_field, values}), do: values
 
   defp construct_traversed_message(_changeset, field, {message, opts}) do
     construct_message(field, {message, opts})
   end
+
+  defp construct_field(parent_field, field), do: "#{parent_field}.#{field}"
 
   @doc "Generate a single `Kronky.ValidationMessage` struct from a changeset.
 

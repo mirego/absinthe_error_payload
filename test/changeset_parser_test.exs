@@ -9,6 +9,15 @@ defmodule Kronky.ChangesetParserTest do
   alias Kronky.ChangesetParser
 
   # taken from Ecto.changeset tests
+  defmodule Author do
+    @moduledoc false
+     use Ecto.Schema
+
+     schema "author" do
+       field :name, :string
+     end
+   end
+
   defmodule Post do
     @moduledoc false
      use Ecto.Schema
@@ -22,6 +31,8 @@ defmodule Kronky.ChangesetParserTest do
        field :topics, {:array, :string}
        field :virtual, :string, virtual: true
        field :published_at, :naive_datetime
+
+       belongs_to :author, Author
      end
    end
 
@@ -63,6 +74,21 @@ defmodule Kronky.ChangesetParserTest do
      assert %ValidationMessage{code: :length, field: :title, key: :title} = first
      assert %ValidationMessage{code: :format, field: :title, key: :title} = second
    end
+  end
+
+  describe "nested" do
+    test "nested fields with errors" do
+      changeset = %{"author" => %{"name" => ""}}
+                  |> changeset()
+                  |> cast_assoc(:author, with: fn(author, params) ->
+                    cast(author, params, ~w(name)a)
+                    |> validate_required(:name)
+                  end)
+
+      result = ChangesetParser.extract_messages(changeset)
+      assert [first] = result
+      assert %ValidationMessage{code: :required, field: "author.name", key: :name} = first
+    end
   end
 
   describe "construct_message/2" do

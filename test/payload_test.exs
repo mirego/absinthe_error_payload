@@ -163,7 +163,7 @@ defmodule Kronky.PayloadTest do
 
       result = build_payload(resolution, nil)
 
-      assert %{value: value} = result
+      assert %{value: _value} = result
 
       assert_error_payload(messages, result)
     end
