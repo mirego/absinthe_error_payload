@@ -88,9 +88,22 @@ defmodule Kronky.TestHelper do
     {"#{k}", "#{v}"}
   end
 
-  @doc "compares string times with Timex to ensure they're the same"
+  defp parse_iso_datetime(value) do
+    case DateTime.from_iso8601(value) do
+      {:ok, datetime, _} -> datetime
+      {:error, _} -> :error
+    end
+  end
+
+  @doc "compares ISO Extended formatted strings"
   def assert_similar_times(first, second) do
-    Timex.compare(Timex.parse(first, "{ISO:Extended}"), Timex.parse(second, "{ISO:Extended}"))
+    first = parse_iso_datetime(first)
+    second = parse_iso_datetime(second)
+    case {first, second} do
+      {:error, _} -> false
+      {_, :error} -> false
+      {first, second} -> DateTime.compare(first, second) == :eq
+    end
   end
 
   defp camelize(v), do: v |> to_string() |> Absinthe.Utils.camelize(lower: true)
@@ -107,10 +120,6 @@ defmodule Kronky.TestHelper do
   end
 
   defp assert_values_match({_, _, "", nil}), do: nil
-
-  defp assert_values_match({_field, :date, expected, nil}) do
-    assert Timex.parse(expected, "{ISO:Extended}") == nil
-  end
 
   defp assert_values_match({_field, :date, expected, response}) do
     assert_similar_times(expected, response)
@@ -152,7 +161,7 @@ defmodule Kronky.TestHelper do
   - camelCasing field names
   - coverting all non-int values to strings, including converting `false` to `"false"`
   - uppercasing enum field responses
-  - using Timex to compare time values
+  - parsing date types as ISO Extended format strings
 
   Supported field types are: :string, :float, :integer, :enum, :date, :list, :boolean
 
@@ -207,8 +216,8 @@ defmodule Kronky.TestHelper do
         createUser(
           user: {
             age: 6
-            firstName: \\"Lilo\\"
-            lastName: \\"Pelekai\\"
+            firstName: "Lilo"
+            lastName: "Pelekai"
           }
         ){
           successful
