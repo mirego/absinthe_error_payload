@@ -1,12 +1,20 @@
 
-v0.4.0 (2017-07-17)
+v0.5.0 (2018-02-01)
+
+### Enhancements
+  * Replace Timex.parse with DateTime.from_iso8601. This eliminates Timex as a dependency.
+  * Now Supports Absinthe.Resolution errors in build_payload/2 (thanks @thermech !)
+
+### BugFixes
+
+v0.4.0 (2017-08-03)
 
 ### Enhancements
   * `Payload.convert_to_payload` is now public and can be used to generate payloads in the same manner as the `build_payload` middleware
 
 ### BugFixes
 
-  * fix issue with Boolean values not comparing properly
+  * fixed issue with Boolean values not comparing properly
 
 v0.3.0 (2017-07-17)
 
@@ -16,7 +24,7 @@ v0.3.0 (2017-07-17)
 
 ### BugFixes
 
-  * fix issue with NaiveDateTime values not comparing properly
+  * fixed issue with NaiveDateTime values not comparing properly
 
 v0.2.3 (2017-07-05)
 
@@ -27,7 +35,7 @@ v0.2.2 (2017-06-08)
 
 ### BugFixes
 
-  * fix Bug where field names were not showing up in graphql responses due to `:key` vs `:field` differences
+  * fixed Bug where field names were not showing up in graphql responses due to `:key` vs `:field` differences
 
 ### Enhancements
   * improve messages on failure within `assert_mutation_error` and `assert_mutation_success`
