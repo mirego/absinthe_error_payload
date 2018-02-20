@@ -2,7 +2,9 @@
 # and its dependencies with the aid of the Mix.Config module.
 use Mix.Config
 
-config :kronky, ecto_repos: []
+config :kronky,
+  ecto_repos: [],
+  field_constructor: Kronky.FieldConstructor
 
 # This configuration is loaded before any dependency and is restricted
 # to this project. If another project depends on this project, this

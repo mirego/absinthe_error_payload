@@ -18,6 +18,15 @@ defmodule Kronky.ChangesetParserTest do
      end
    end
 
+  defmodule Tag do
+    @moduledoc false
+     use Ecto.Schema
+
+     schema "tags" do
+       field :name, :string
+     end
+   end
+
   defmodule Post do
     @moduledoc false
      use Ecto.Schema
@@ -33,6 +42,7 @@ defmodule Kronky.ChangesetParserTest do
        field :published_at, :naive_datetime
 
        belongs_to :author, Author
+       has_many :tags, Tag
      end
    end
 
@@ -88,6 +98,20 @@ defmodule Kronky.ChangesetParserTest do
       result = ChangesetParser.extract_messages(changeset)
       assert [first] = result
       assert %ValidationMessage{code: :required, field: "author.name", key: :name} = first
+    end
+
+    test "nested has many fields with errors" do
+      changeset = %{"tags" => [%{"name" => ""}, %{"name" => ""}]}
+                  |> changeset()
+                  |> cast_assoc(:tags, with: fn(tag, params) ->
+                    cast(tag, params, ~w(name)a)
+                    |> validate_required(:name)
+                  end)
+
+      result = ChangesetParser.extract_messages(changeset)
+      assert [first, second] = result
+      assert %ValidationMessage{code: :required, field: "tags.0.name", key: :name} = first
+      assert %ValidationMessage{code: :required, field: "tags.1.name", key: :name} = second
     end
   end
 

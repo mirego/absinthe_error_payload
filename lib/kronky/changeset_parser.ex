@@ -28,12 +28,23 @@ defmodule Kronky.ChangesetParser do
 
   defp handle_nested_errors({parent_field, values}) when is_map(values) do
     Enum.flat_map(values, fn({field, value}) ->
-      handle_nested_errors({construct_field(parent_field, field), value})
+      {construct_field(parent_field, field), value}
+      |> handle_nested_errors()
     end)
   end
 
-  defp handle_nested_errors({field, values}) when is_list(values) do
-    Enum.map(values, fn(value) -> %{value | field: field} end)
+  defp handle_nested_errors({parent_field, values}) when is_list(values) do
+    values
+   |> Enum.with_index()
+    |> Enum.flat_map(fn
+       ({%ValidationMessage{} = value, _index}) -> [%{value | field: parent_field}]
+       ({many_values, index}) ->
+         many_values
+         |> Enum.flat_map(fn({field, values}) ->
+          {construct_field(parent_field, field, index: index), values}
+          |> handle_nested_errors()
+       end)
+    end)
   end
 
   defp handle_nested_errors({_field, values}), do: values
@@ -42,7 +53,11 @@ defmodule Kronky.ChangesetParser do
     construct_message(field, {message, opts})
   end
 
-  defp construct_field(parent_field, field), do: "#{parent_field}.#{field}"
+  defp construct_field(parent_field, field, options \\ []) do
+    :kronky
+    |> Application.get_env(:field_constructor)
+    |> apply(:error, [parent_field, field, options])
+  end
 
   @doc "Generate a single `Kronky.ValidationMessage` struct from a changeset.
 
@@ -61,7 +76,7 @@ defmodule Kronky.ChangesetParser do
   def construct_message(field, {message, opts}) do
     %ValidationMessage{
       code: to_code({message, opts}),
-      field: field,
+      field: construct_field(field, nil),
       key: field,
       template: message,
       message: interpolate_message({message, opts}),
