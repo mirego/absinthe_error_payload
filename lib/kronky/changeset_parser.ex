@@ -100,7 +100,13 @@ defmodule Kronky.ChangesetParser do
   #Code Taken from the Pheonix DataCase.on_errors/1 boilerplate"
   def interpolate_message({message, opts}) do
     Enum.reduce(opts, message, fn {key, value}, acc ->
-      String.replace(acc, "%{#{key}}", to_string(value))
+      key_pattern = "%{#{key}}"
+
+      if String.contains?(acc, key_pattern) do
+        String.replace(acc, key_pattern, to_string(value))
+      else
+        acc
+      end
     end)
   end
 
