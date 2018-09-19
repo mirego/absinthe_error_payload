@@ -1,5 +1,5 @@
 defmodule Kronky.FieldConstructor do
-  @callback error(String.t, String.t, list()) :: String.t
+  @callback error(String.t(), String.t(), list()) :: String.t()
 
   def error(parent_field, field, options \\ [])
   def error(parent_field, nil, _options), do: parent_field

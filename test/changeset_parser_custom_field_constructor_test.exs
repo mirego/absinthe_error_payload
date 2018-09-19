@@ -14,7 +14,7 @@ defmodule Kronky.ChangesetParserCustomFieldConstructorTest do
     use Ecto.Schema
 
     schema "author" do
-      field :name, :string
+      field(:name, :string)
     end
   end
 
@@ -23,7 +23,7 @@ defmodule Kronky.ChangesetParserCustomFieldConstructorTest do
     use Ecto.Schema
 
     schema "tags" do
-      field :name, :string
+      field(:name, :string)
     end
   end
 
@@ -32,17 +32,17 @@ defmodule Kronky.ChangesetParserCustomFieldConstructorTest do
     use Ecto.Schema
 
     schema "posts" do
-      field :title, :string, default: ""
-      field :body
-      field :uuid, :binary_id
-      field :decimal, :decimal
-      field :upvotes, :integer, default: 0
-      field :topics, {:array, :string}
-      field :virtual, :string, virtual: true
-      field :published_at, :naive_datetime
+      field(:title, :string, default: "")
+      field(:body)
+      field(:uuid, :binary_id)
+      field(:decimal, :decimal)
+      field(:upvotes, :integer, default: 0)
+      field(:topics, {:array, :string})
+      field(:virtual, :string, virtual: true)
+      field(:published_at, :naive_datetime)
 
-      belongs_to :author, Author
-      has_many :tags, Tag
+      belongs_to(:author, Author)
+      has_many(:tags, Tag)
     end
   end
 
@@ -76,12 +76,15 @@ defmodule Kronky.ChangesetParserCustomFieldConstructorTest do
   end
 
   test "nested fields" do
-    changeset = %{"author" => %{"name" => ""}}
-                |> changeset()
-                |> cast_assoc(:author, with: fn(author, params) ->
-                  cast(author, params, ~w(name)a)
-                  |> validate_required(:name)
-                end)
+    changeset =
+      %{"author" => %{"name" => ""}}
+      |> changeset()
+      |> cast_assoc(:author,
+        with: fn author, params ->
+          cast(author, params, ~w(name)a)
+          |> validate_required(:name)
+        end
+      )
 
     result = ChangesetParser.extract_messages(changeset)
     assert [first] = result
@@ -89,12 +92,15 @@ defmodule Kronky.ChangesetParserCustomFieldConstructorTest do
   end
 
   test "nested fields with index" do
-    changeset = %{"tags" => [%{"name" => ""}, %{"name" => ""}]}
-                |> changeset()
-                |> cast_assoc(:tags, with: fn(tag, params) ->
-                  cast(tag, params, ~w(name)a)
-                  |> validate_required(:name)
-                end)
+    changeset =
+      %{"tags" => [%{"name" => ""}, %{"name" => ""}]}
+      |> changeset()
+      |> cast_assoc(:tags,
+        with: fn tag, params ->
+          cast(tag, params, ~w(name)a)
+          |> validate_required(:name)
+        end
+      )
 
     result = ChangesetParser.extract_messages(changeset)
     assert [first, second] = result

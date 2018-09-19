@@ -4,7 +4,7 @@ defmodule Kronky.ChangesetParser do
   Currently *does not* support nested errors
   """
 
-  import Ecto.Changeset, only: ["traverse_errors": 2]
+  import Ecto.Changeset, only: [traverse_errors: 2]
   alias Kronky.ValidationMessage
 
   @doc "Extract a nested map of raw errors from a changeset
@@ -22,12 +22,12 @@ defmodule Kronky.ChangesetParser do
   def extract_messages(changeset) do
     changeset
     |> traverse_errors(&construct_traversed_message/3)
-    |> Enum.to_list
+    |> Enum.to_list()
     |> Enum.flat_map(&handle_nested_errors/1)
   end
 
   defp handle_nested_errors({parent_field, values}) when is_map(values) do
-    Enum.flat_map(values, fn({field, value}) ->
+    Enum.flat_map(values, fn {field, value} ->
       {construct_field(parent_field, field), value}
       |> handle_nested_errors()
     end)
@@ -35,15 +35,17 @@ defmodule Kronky.ChangesetParser do
 
   defp handle_nested_errors({parent_field, values}) when is_list(values) do
     values
-   |> Enum.with_index()
+    |> Enum.with_index()
     |> Enum.flat_map(fn
-       ({%ValidationMessage{} = value, _index}) -> [%{value | field: parent_field}]
-       ({many_values, index}) ->
-         many_values
-         |> Enum.flat_map(fn({field, values}) ->
+      {%ValidationMessage{} = value, _index} ->
+        [%{value | field: parent_field}]
+
+      {many_values, index} ->
+        many_values
+        |> Enum.flat_map(fn {field, values} ->
           {construct_field(parent_field, field, index: index), values}
           |> handle_nested_errors()
-       end)
+        end)
     end)
   end
 
@@ -73,6 +75,7 @@ defmodule Kronky.ChangesetParser do
     ```
   "
   def construct_message(field, error_tuple)
+
   def construct_message(field, {message, opts}) do
     %ValidationMessage{
       code: to_code({message, opts}),
@@ -80,7 +83,7 @@ defmodule Kronky.ChangesetParser do
       key: field,
       template: message,
       message: interpolate_message({message, opts}),
-      options: tidy_opts(opts),
+      options: tidy_opts(opts)
     }
   end
 
@@ -97,7 +100,7 @@ defmodule Kronky.ChangesetParser do
       "length should be between 1 and 2"
 
   """
-  #Code Taken from the Pheonix DataCase.on_errors/1 boilerplate"
+  # Code Taken from the Pheonix DataCase.on_errors/1 boilerplate"
   def interpolate_message({message, opts}) do
     Enum.reduce(opts, message, fn {key, value}, acc ->
       key_pattern = "%{#{key}}"
@@ -161,7 +164,6 @@ defmodule Kronky.ChangesetParser do
   defp do_to_code(%{validation: :length, min: _}), do: :min
   defp do_to_code(%{validation: :length, max: _}), do: :max
 
-
   defp do_to_code(%{validation: :number, message: message}) do
     cond do
       String.contains?(message, "less than or equal to") -> :less_than_or_equal_to
@@ -179,9 +181,7 @@ defmodule Kronky.ChangesetParser do
   defp do_to_code(%{message: "does not exist"}), do: :foreign
   defp do_to_code(%{message: "is still associated with this entry"}), do: :no_assoc
 
-
   defp do_to_code(_unknown) do
     :unknown
   end
-
 end

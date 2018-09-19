@@ -13,14 +13,22 @@ defmodule Kronky.PayloadTest do
   def resolution(value) do
     %Resolution{
       value: value,
-      adapter: "", context: "", root_value: "", schema: "", source: ""
+      adapter: "",
+      context: "",
+      root_value: "",
+      schema: "",
+      source: ""
     }
   end
 
   defp resolution_error(error) do
     %Resolution{
       errors: error,
-      adapter: "", context: "", root_value: "", schema: "", source: ""
+      adapter: "",
+      context: "",
+      root_value: "",
+      schema: "",
+      source: ""
     }
   end
 
@@ -42,13 +50,13 @@ defmodule Kronky.PayloadTest do
 
     for message <- messages do
       message = convert_field_name(message)
+
       assert Enum.find_value(value.messages, &(message == &1)),
-        "Expected to find \n#{inspect(message)}\n in \n#{inspect(value.messages)}"
+             "Expected to find \n#{inspect(message)}\n in \n#{inspect(value.messages)}"
     end
   end
 
   describe "build_payload/2" do
-
     test "validation message tuple" do
       message = %ValidationMessage{code: :required}
       resolution = resolution(message)
@@ -86,11 +94,13 @@ defmodule Kronky.PayloadTest do
     end
 
     test "error changeset" do
-      changeset = {%{}, %{title: :string, title_lang: :string}}
+      changeset =
+        {%{}, %{title: :string, title_lang: :string}}
         |> Ecto.Changeset.cast(%{}, [:title, :title_lang])
         |> add_error(:title, "error 1")
         |> add_error(:title, "error 2")
         |> add_error(:title_lang, "error 3")
+
       resolution = resolution(changeset)
 
       result = build_payload(resolution, nil)
@@ -98,14 +108,15 @@ defmodule Kronky.PayloadTest do
       messages = [
         %ValidationMessage{code: :unknown, message: "error 1", template: "error 1", field: :title, key: :title},
         %ValidationMessage{code: :unknown, message: "error 2", template: "error 2", field: :title, key: :title},
-        %ValidationMessage{code: :unknown, message: "error 3", template: "error 3", field: :titleLang, key: :titleLang},
+        %ValidationMessage{code: :unknown, message: "error 3", template: "error 3", field: :titleLang, key: :titleLang}
       ]
 
       assert_error_payload(messages, result)
     end
 
     test "valid changeset" do
-      changeset = {%{}, %{title: :string, body: :string}}
+      changeset =
+        {%{}, %{title: :string, body: :string}}
         |> Ecto.Changeset.cast(%{}, [:title, :body])
 
       resolution = resolution(changeset)
@@ -154,6 +165,7 @@ defmodule Kronky.PayloadTest do
         %ValidationMessage{code: :unknown, message: "an error", template: "an error"},
         %ValidationMessage{code: :unknown, message: "another error", template: "another error"}
       ]
+
       assert_error_payload(messages, result)
     end
 
@@ -167,7 +179,5 @@ defmodule Kronky.PayloadTest do
 
       assert_error_payload(messages, result)
     end
-
   end
-
 end

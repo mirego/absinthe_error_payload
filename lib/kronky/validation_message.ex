@@ -38,6 +38,5 @@ defmodule Kronky.ValidationMessage do
   Deprecated, use :field instead
   """
   @enforce_keys [:code]
-  defstruct [field: nil, key: nil, code: nil, options: [], template: "is invalid", message: "is invalid"]
-
+  defstruct field: nil, key: nil, code: nil, options: [], template: "is invalid", message: "is invalid"
 end

@@ -17,13 +17,13 @@ defmodule Kronky.Payload do
   2. `import_types Kronky.ValidationMessageTypes`
   3. create a payload object for each object using `payload_object(payload_name, object_name)`
   4. create a mutation that returns the payload object. Add the payload middleware after the resolver.
-    ```
-    field :create_user, type: :user_payload, description: "add a user" do
-      arg :user, :create_user_params
-      resolve &UserResolver.create/2
-      middleware &build_payload/2
-    end
-    ```
+  ```
+  field :create_user, type: :user_payload, description: "add a user" do
+    arg :user, :create_user_params
+    resolve &UserResolver.create/2
+    middleware &build_payload/2
+  end
+  ```
 
   ## Example Schema
 
@@ -32,61 +32,61 @@ defmodule Kronky.Payload do
   ```elixir
 
   defmodule MyApp.Schema.User do
-    @moduledoc false
+  @moduledoc false
 
-    use Absinthe.Schema.Notation
-    import Kronky.Payload
-    import_types Kronky.ValidationMessageTypes
+  use Absinthe.Schema.Notation
+  import Kronky.Payload
+  import_types Kronky.ValidationMessageTypes
 
-    alias MyApp.Resolvers.User, as: UserResolver
+  alias MyApp.Resolvers.User, as: UserResolver
 
-    object :user, description: "Someone on our planet" do
-      field :id, non_null(:id), description: "unique identifier"
-      field :first_name, non_null(:string), description: "User's first name"
-      field :last_name, :string, description: "Optional Last Name"
-      field :age, :integer, description: "Age in Earth years"
-      field :inserted_at, :time, description: "Created at"
-      field :updated_at, :time, description: "Last updated at"
+  object :user, description: "Someone on our planet" do
+    field :id, non_null(:id), description: "unique identifier"
+    field :first_name, non_null(:string), description: "User's first name"
+    field :last_name, :string, description: "Optional Last Name"
+    field :age, :integer, description: "Age in Earth years"
+    field :inserted_at, :time, description: "Created at"
+    field :updated_at, :time, description: "Last updated at"
+  end
+
+  input_object :create_user_params, description: "create a user" do
+    field :first_name, non_null(:string), description: "Required first name"
+    field :last_name, :string, description: "Optional last name"
+    field :age, :integer, description: "Age in Earth years"
+  end
+
+  payload_object(:user_payload, :user)
+
+  object :user_mutations do
+
+    field :create_user, type: :user_payload, description: "Create a new user" do
+      arg :user, :create_user_params
+      resolve &UserResolver.create/2
+      middleware &build_payload/2
     end
+  end
+  ```
 
-    input_object :create_user_params, description: "create a user" do
-      field :first_name, non_null(:string), description: "Required first name"
-      field :last_name, :string, description: "Optional last name"
-      field :age, :integer, description: "Age in Earth years"
-    end
+  In your main schema file
 
-    payload_object(:user_payload, :user)
+  ```
+  import_types MyApp.Schema.User
 
-    object :user_mutations do
+  mutation do
+   ...
+   import_fields :user_mutations
+  end
+  ```
 
-      field :create_user, type: :user_payload, description: "Create a new user" do
-        arg :user, :create_user_params
-        resolve &UserResolver.create/2
-        middleware &build_payload/2
-      end
-    end
-    ```
+  ## Alternate Use
 
-    In your main schema file
+  If you'd prefer not to use the middleware style, you can generate Kronky payloads
+  in your resolver instead. See `success_payload/1` and `error_payload/1` for examples.
 
-    ```
-    import_types MyApp.Schema.User
-
-    mutation do
-     ...
-     import_fields :user_mutations
-    end
-    ```
-
-    ## Alternate Use
-
-    If you'd prefer not to use the middleware style, you can generate Kronky payloads
-    in your resolver instead. See `success_payload/1` and `error_payload/1` for examples.
-
-    """
+  """
 
   @enforce_keys [:successful]
-  defstruct [successful: nil, messages: [], result: nil]
+  defstruct successful: nil, messages: [], result: nil
   alias __MODULE__
   alias Kronky.ValidationMessage
   import Kronky.ChangesetParser
@@ -117,15 +117,13 @@ defmodule Kronky.Payload do
   """
   defmacro payload_object(payload_name, result_object_name) do
     quote location: :keep do
-
       object unquote(payload_name) do
-        field :successful, non_null(:boolean), description: "Indicates if the mutation completed successfully or not. "
-        field :messages, list_of(:validation_message), description: "A list of failed validations. May be blank or null if mutation succeeded."
-        field :result, unquote(result_object_name), description: "The object created/updated/deleted by the mutation. May be null if mutation failed."
+        field(:successful, non_null(:boolean), description: "Indicates if the mutation completed successfully or not. ")
+        field(:messages, list_of(:validation_message), description: "A list of failed validations. May be blank or null if mutation succeeded.")
+        field(:result, unquote(result_object_name), description: "The object created/updated/deleted by the mutation. May be null if mutation failed.")
       end
     end
   end
-
 
   @doc """
   Convert a resolution value to a mutation payload
@@ -310,6 +308,7 @@ defmodule Kronky.Payload do
   ```
   """
   def error_payload(%ValidationMessage{} = message), do: error_payload([message])
+
   def error_payload(messages) when is_list(messages) do
     messages = messages |> Enum.map(&prepare_message/1)
     %Payload{successful: false, messages: messages}
@@ -317,15 +316,18 @@ defmodule Kronky.Payload do
 
   @doc "convert validation message field to camelCase format used by graphQL"
   def convert_field_name(%ValidationMessage{} = message) do
-    field = cond do
-      message.field == nil -> camelized_name(message.key)
-      message.key == nil -> camelized_name(message.field)
-      true -> camelized_name(message.field)
-    end
+    field =
+      cond do
+        message.field == nil -> camelized_name(message.key)
+        message.key == nil -> camelized_name(message.field)
+        true -> camelized_name(message.field)
+      end
+
     %{message | field: field, key: field}
   end
 
   defp camelized_name(nil), do: nil
+
   defp camelized_name(field) do
     field |> to_string() |> Absinthe.Utils.camelize(lower: true)
   end
@@ -375,8 +377,11 @@ defmodule Kronky.Payload do
 
   defp generic_validation_message(message) do
     %ValidationMessage{
-      code: :unknown, field: nil, template: message, message: message, options: []
+      code: :unknown,
+      field: nil,
+      template: message,
+      message: message,
+      options: []
     }
   end
-
 end
