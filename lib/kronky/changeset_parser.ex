@@ -28,28 +28,30 @@ defmodule Kronky.ChangesetParser do
 
   defp handle_nested_errors({parent_field, values}) when is_map(values) do
     Enum.flat_map(values, fn {field, value} ->
-      {construct_field(parent_field, field), value}
-      |> handle_nested_errors()
+      field_with_parent = construct_field(parent_field, field)
+      handle_nested_errors({field_with_parent, value})
     end)
   end
 
   defp handle_nested_errors({parent_field, values}) when is_list(values) do
     values
+    |> Enum.reject(&(&1 === %{}))
     |> Enum.with_index()
-    |> Enum.flat_map(fn
-      {%ValidationMessage{} = value, _index} ->
-        [%{value | field: parent_field}]
-
-      {many_values, index} ->
-        many_values
-        |> Enum.flat_map(fn {field, values} ->
-          {construct_field(parent_field, field, index: index), values}
-          |> handle_nested_errors()
-        end)
-    end)
+    |> Enum.flat_map(&handle_nested_error(parent_field, &1))
   end
 
   defp handle_nested_errors({_field, values}), do: values
+
+  defp handle_nested_error(parent_field, {%ValidationMessage{} = value, _index}) do
+    [%{value | field: parent_field}]
+  end
+
+  defp handle_nested_error(parent_field, {many_values, index}) do
+    Enum.flat_map(many_values, fn {field, values} ->
+      field_with_index = construct_field(parent_field, field, index: index)
+      handle_nested_errors({field_with_index, values})
+    end)
+  end
 
   defp construct_traversed_message(_changeset, field, {message, opts}) do
     construct_message(field, {message, opts})

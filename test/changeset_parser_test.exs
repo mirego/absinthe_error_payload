@@ -43,11 +43,27 @@ defmodule Kronky.ChangesetParserTest do
 
       belongs_to(:author, Author)
       has_many(:tags, Tag)
+
+      embeds_many :embedded_tags, EmbeddedTag, on_replace: :delete do
+        field(:name)
+      end
     end
   end
 
   defp changeset(params) do
     cast(%Post{}, params, ~w(title body upvotes decimal topics virtual))
+  end
+
+  defp changeset_with_embeds(params) do
+    cast(
+      %Post{
+        embedded_tags: [
+          %Post.EmbeddedTag{id: "30b2111e-6b57-45ed-bf85-ed2f41715832", name: "foo"}
+        ]
+      },
+      params,
+      ~w(title body upvotes decimal topics virtual)
+    )
   end
 
   describe "interpolate_message/1" do
@@ -103,6 +119,23 @@ defmodule Kronky.ChangesetParserTest do
       result = ChangesetParser.extract_messages(changeset)
       assert [first] = result
       assert %ValidationMessage{code: :required, field: "author.name", key: :name} = first
+    end
+
+    test "nested fields with errors on replaced embeds_many" do
+      changeset =
+        %{"embedded_tags" => [%{"name" => ""}, %{"name" => ""}]}
+        |> changeset_with_embeds()
+        |> cast_embed(:embedded_tags,
+          with: fn tag, params ->
+            cast(tag, params, ~w(name)a)
+            |> validate_required(:name)
+          end
+        )
+
+      result = ChangesetParser.extract_messages(changeset)
+      assert [first, second] = result
+      assert %ValidationMessage{message: "can't be blank", code: :required, field: "embedded_tags.0.name", key: :name} = first
+      assert %ValidationMessage{message: "can't be blank", code: :required, field: "embedded_tags.1.name", key: :name} = second
     end
 
     test "nested has many fields with errors" do
