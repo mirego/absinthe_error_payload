@@ -21,10 +21,25 @@ defmodule Kronky.ChangesetParser do
   "
   def extract_messages(changeset) do
     changeset
+    |> reject_replaced_changes()
     |> traverse_errors(&construct_traversed_message/3)
     |> Enum.to_list()
     |> Enum.flat_map(&handle_nested_errors/1)
   end
+
+  defp reject_replaced_changes(values) when is_list(values) do
+    values
+    |> Enum.map(&reject_replaced_changes/1)
+    |> Enum.reject(&match?(%Ecto.Changeset{action: :replace}, &1))
+  end
+
+  defp reject_replaced_changes(changeset = %{changes: changes}) do
+    Enum.reduce(changes, changeset, fn {key, value}, acc ->
+      %{acc | changes: %{key => reject_replaced_changes(value)}}
+    end)
+  end
+
+  defp reject_replaced_changes(value), do: value
 
   defp handle_nested_errors({parent_field, values}) when is_map(values) do
     Enum.flat_map(values, fn {field, value} ->
@@ -35,7 +50,6 @@ defmodule Kronky.ChangesetParser do
 
   defp handle_nested_errors({parent_field, values}) when is_list(values) do
     values
-    |> Enum.reject(&(&1 === %{}))
     |> Enum.with_index()
     |> Enum.flat_map(&handle_nested_error(parent_field, &1))
   end
