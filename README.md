@@ -49,6 +49,12 @@ Kronky was not being updated and while it still worked for older versions, a mor
 
 Thank you [Ethelo](http://ethelo.com/) for the awesome library!
 
+## License
+
+AbsintheErrorPayload is © 2019 [Mirego](https://www.mirego.com) and may be freely distributed under the [New BSD license](http://opensource.org/licenses/BSD-3-Clause). See the [`LICENSE.md`](https://github.com/mirego/absinthe-error-payload/blob/master/LICENSE.md) file.
+
+The flask logo is based on [this lovely icon by Danil Polshin](https://thenounproject.com/term/flask/1428207), from The Noun Project. Used under a [Creative Commons BY 3.0](http://creativecommons.org/licenses/by/3.0/) license.
+
 ## About Mirego
 
 [Mirego](https://www.mirego.com) is a team of passionate people who believe that work is a place where you can innovate and have fun. We’re a team of [talented people](https://life.mirego.com) who imagine and build beautiful Web and mobile applications. We come together to share ideas and [change the world](http://www.mirego.org).
