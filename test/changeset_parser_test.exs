@@ -1,4 +1,4 @@
-defmodule Kronky.ChangesetParserTest do
+defmodule AbsintheErrorPayload.ChangesetParserTest do
   @moduledoc """
   Test conversion of changeset errors to ValidationMessage structs
 
@@ -7,8 +7,8 @@ defmodule Kronky.ChangesetParserTest do
 
   import Ecto.Changeset
 
-  alias Kronky.ChangesetParser
-  alias Kronky.ValidationMessage
+  alias AbsintheErrorPayload.ChangesetParser
+  alias AbsintheErrorPayload.ValidationMessage
 
   # taken from Ecto.changeset tests
   defmodule Author do

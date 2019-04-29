@@ -1,8 +1,8 @@
-defmodule Kronky.Payload do
+defmodule AbsintheErrorPayload.Payload do
   @moduledoc """
   Absinthe Middleware to build a mutation payload response.
 
-  Kronky mutation responses (aka "payloads") have three fields
+  AbsintheErrorPayload mutation responses (aka "payloads") have three fields
 
   - `successful` - Indicates if the mutation completed successfully or not. Boolean.
   - `messages` - a list of validation errors. Always empty on success
@@ -13,8 +13,8 @@ defmodule Kronky.Payload do
 
   In your schema file
 
-  1. `import Kronky.Payload`
-  2. `import_types Kronky.ValidationMessageTypes`
+  1. `import AbsintheErrorPayload.Payload`
+  2. `import_types AbsintheErrorPayload.ValidationMessageTypes`
   3. create a payload object for each object using `payload_object(payload_name, object_name)`
   4. create a mutation that returns the payload object. Add the payload middleware after the resolver.
   ```
@@ -35,8 +35,8 @@ defmodule Kronky.Payload do
   @moduledoc false
 
   use Absinthe.Schema.Notation
-  import Kronky.Payload
-  import_types Kronky.ValidationMessageTypes
+  import AbsintheErrorPayload.Payload
+  import_types AbsintheErrorPayload.ValidationMessageTypes
 
   alias MyApp.Resolvers.User, as: UserResolver
 
@@ -80,7 +80,7 @@ defmodule Kronky.Payload do
 
   ## Alternate Use
 
-  If you'd prefer not to use the middleware style, you can generate Kronky payloads
+  If you'd prefer not to use the middleware style, you can generate AbsintheErrorPayload payloads
   in your resolver instead. See `success_payload/1` and `error_payload/1` for examples.
 
   """
@@ -90,10 +90,10 @@ defmodule Kronky.Payload do
 
   use Absinthe.Schema.Notation
 
-  import Kronky.ChangesetParser
+  import AbsintheErrorPayload.ChangesetParser
 
   alias __MODULE__
-  alias Kronky.ValidationMessage
+  alias AbsintheErrorPayload.ValidationMessage
 
   @doc """
   Create a payload object definition
@@ -116,7 +116,7 @@ defmodule Kronky.Payload do
   end
   ```
 
-  This method must be called after `import_types Kronky.MutationTypes` or it will fail due to `:validation_message` not being defined.
+  This method must be called after `import_types AbsintheErrorPayload.MutationTypes` or it will fail due to `:validation_message` not being defined.
   """
   defmacro payload_object(payload_name, result_object_name) do
     quote location: :keep do
@@ -152,7 +152,7 @@ defmodule Kronky.Payload do
   ```
 
   The build payload middleware will also accept error tuples with single or lists of
-  `Kronky.ValidationMessage` or string errors. However, lists and strings will need to be wrapped in
+  `AbsintheErrorPayload.ValidationMessage` or string errors. However, lists and strings will need to be wrapped in
   an :ok tuple or they will be seen as errors by graphql.
 
   An example resolver could look like:
@@ -189,7 +189,7 @@ defmodule Kronky.Payload do
 
   ## Alternate Use
 
-  If you'd prefer not to use the middleware style, you can generate Kronky payloads
+  If you'd prefer not to use the middleware style, you can generate AbsintheErrorPayload payloads
   in your resolver instead. See `convert_to_payload/1`, `success_payload/1` and `error_payload/1` for examples.
 
   """
@@ -201,7 +201,7 @@ defmodule Kronky.Payload do
   @doc """
   Convert resolution errors to a mutation payload
 
-  The build payload middleware will accept lists of `Kronky.ValidationMessage` or string errors.
+  The build payload middleware will accept lists of `AbsintheErrorPayload.ValidationMessage` or string errors.
 
   Valid formats are:
   ```
@@ -220,7 +220,7 @@ defmodule Kronky.Payload do
 
   This function will automatically transform an invalid changeset into validation errors.
 
-  Changesets, error tuples and lists of `Kronky.ValidationMessage` will be identified
+  Changesets, error tuples and lists of `AbsintheErrorPayload.ValidationMessage` will be identified
   as errors and will generate an error payload.
 
   Error formats are:
@@ -250,7 +250,7 @@ defmodule Kronky.Payload do
       nil -> %ValidationMessage{field: :id, code: "not found", message: "does not exist"}}
       user -> user
     end
-    |> Kronky.Payload.convert_to_payload()
+    |> AbsintheErrorPayload.Payload.convert_to_payload()
   end
   """
   def convert_to_payload({:error, %ValidationMessage{} = message}) do

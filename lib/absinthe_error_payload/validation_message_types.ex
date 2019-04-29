@@ -1,11 +1,11 @@
-defmodule Kronky.ValidationMessageTypes do
+defmodule AbsintheErrorPayload.ValidationMessageTypes do
   @moduledoc """
   This contains absinthe objects used in mutation responses.
 
   To use, import into your Absinthe.Schema files with
 
   ```
-  import_types Kronky.ValidationMessageTypes
+  import_types AbsintheErrorPayload.ValidationMessageTypes
   ```
 
   ## Objects
@@ -20,7 +20,7 @@ defmodule Kronky.ValidationMessageTypes do
   end
   ```
 
-  :validation_message contains all fields included in a `Kronky.ValidationMessage` for maximum flexibility.
+  :validation_message contains all fields included in a `AbsintheErrorPayload.ValidationMessage` for maximum flexibility.
 
   This is possibly more information than you wish to supply - in that case, rather than importing this Module,
   you can create your own objects and use them. For example, if you only want to supply interpolated messages,

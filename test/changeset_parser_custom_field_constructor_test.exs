@@ -1,4 +1,4 @@
-defmodule Kronky.ChangesetParserCustomFieldConstructorTest do
+defmodule AbsintheErrorPayload.ChangesetParserCustomFieldConstructorTest do
   @moduledoc """
   Test conversion of changeset errors to ValidationMessage structs
 
@@ -7,8 +7,8 @@ defmodule Kronky.ChangesetParserCustomFieldConstructorTest do
 
   import Ecto.Changeset
 
-  alias Kronky.ChangesetParser
-  alias Kronky.ValidationMessage
+  alias AbsintheErrorPayload.ChangesetParser
+  alias AbsintheErrorPayload.ValidationMessage
 
   # taken from Ecto.changeset tests
   defmodule Author do
@@ -53,7 +53,7 @@ defmodule Kronky.ChangesetParserCustomFieldConstructorTest do
   end
 
   defmodule CustomFieldConstructor do
-    @behaviour Kronky.FieldConstructor
+    @behaviour AbsintheErrorPayload.FieldConstructor
 
     def error(parent_field, field, options \\ [])
     def error(parent_field, nil, _options), do: "@root›#{parent_field}"
@@ -62,7 +62,7 @@ defmodule Kronky.ChangesetParserCustomFieldConstructorTest do
   end
 
   setup do
-    Application.put_env(:kronky, :field_constructor, CustomFieldConstructor)
+    Application.put_env(:absinthe_error_payload, :field_constructor, CustomFieldConstructor)
   end
 
   describe "construct_message/2" do

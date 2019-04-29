@@ -2,9 +2,9 @@
 # and its dependencies with the aid of the Mix.Config module.
 use Mix.Config
 
-config :kronky,
+config :absinthe_error_payload,
   ecto_repos: [],
-  field_constructor: Kronky.FieldConstructor
+  field_constructor: AbsintheErrorPayload.FieldConstructor
 
 # This configuration is loaded before any dependency and is restricted
 # to this project. If another project depends on this project, this
@@ -14,11 +14,11 @@ config :kronky,
 
 # You can configure for your application as:
 #
-#     config :kronky, key: :value
+#     config :absinthe_error_payload, key: :value
 #
 # And access this configuration in your application as:
 #
-#     Application.get_env(:kronky, :key)
+#     Application.get_env(:absinthe_error_payload, :key)
 #
 # Or configure a 3rd-party app:
 #

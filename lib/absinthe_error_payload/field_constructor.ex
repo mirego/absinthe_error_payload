@@ -1,4 +1,4 @@
-defmodule Kronky.FieldConstructor do
+defmodule AbsintheErrorPayload.FieldConstructor do
   @callback error(String.t(), String.t(), list()) :: String.t()
 
   def error(parent_field, field, options \\ [])

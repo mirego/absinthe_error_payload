@@ -1,4 +1,4 @@
-defmodule Kronky.PayloadTest do
+defmodule AbsintheErrorPayload.PayloadTest do
   @moduledoc """
   Test conversion of changeset errors to ValidationMessage structs
 
@@ -6,11 +6,11 @@ defmodule Kronky.PayloadTest do
   use ExUnit.Case
 
   import Ecto.Changeset
-  import Kronky.Payload
+  import AbsintheErrorPayload.Payload
 
   alias Absinthe.Resolution
-  alias Kronky.Payload
-  alias Kronky.ValidationMessage
+  alias AbsintheErrorPayload.Payload
+  alias AbsintheErrorPayload.ValidationMessage
 
   def resolution(value) do
     %Resolution{

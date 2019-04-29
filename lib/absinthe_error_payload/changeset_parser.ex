@@ -1,13 +1,13 @@
-defmodule Kronky.ChangesetParser do
+defmodule AbsintheErrorPayload.ChangesetParser do
   @moduledoc """
   Converts an ecto changeset into a list of validation errors structs.
   Currently *does not* support nested errors
   """
 
   import Ecto.Changeset, only: [traverse_errors: 2]
-  alias Kronky.ValidationMessage
+  alias AbsintheErrorPayload.ValidationMessage
 
-  @doc "Generate a list of `Kronky.ValidationMessage` structs from changeset errors
+  @doc "Generate a list of `AbsintheErrorPayload.ValidationMessage` structs from changeset errors
 
   For examples, please see the test cases in the github repo.
   "
@@ -64,19 +64,19 @@ defmodule Kronky.ChangesetParser do
   end
 
   defp construct_field(parent_field, field, options \\ []) do
-    :kronky
+    :absinthe_error_payload
     |> Application.get_env(:field_constructor)
     |> apply(:error, [parent_field, field, options])
   end
 
-  @doc "Generate a single `Kronky.ValidationMessage` struct from a changeset.
+  @doc "Generate a single `AbsintheErrorPayload.ValidationMessage` struct from a changeset.
 
   This method is designed to be used with `Ecto.Changeset.traverse_errors` to generate a map of structs.
 
   ## Examples
     ```
     error_map = Changeset.traverse_errors(fn(changeset, field, error) ->
-      Kronky.ChangesetParser.construct_message(field, error)
+      AbsintheErrorPayload.ChangesetParser.construct_message(field, error)
     end)
     error_list = Enum.flat_map(error_map, fn({_, messages}) -> messages end)
 

@@ -1,4 +1,4 @@
-defmodule Kronky.ValidationMessage do
+defmodule AbsintheErrorPayload.ValidationMessage do
   @moduledoc """
   Stores validation message information.
 
@@ -29,7 +29,7 @@ defmodule Kronky.ValidationMessage do
   ### :code
   A unique error code for the type of validation that failed. This field must be provided.
 
-  See `Kronky.ChangesetParser.to_code/1` for built in codes corresponding to most Ecto validations.
+  See `AbsintheErrorPayload.ChangesetParser.to_code/1` for built in codes corresponding to most Ecto validations.
 
   ### :options
   A Keyword List of substitutions to be applied to a validation message template.

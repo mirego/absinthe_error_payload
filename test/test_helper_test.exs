@@ -1,11 +1,11 @@
-defmodule Kronky.TestHelperTest do
+defmodule AbsintheErrorPayload.TestHelperTest do
   @moduledoc """
   Test graphql result test helpers
 
   """
   use ExUnit.Case
-  import Kronky.TestHelper
-  alias Kronky.ValidationMessage
+  import AbsintheErrorPayload.TestHelper
+  alias AbsintheErrorPayload.ValidationMessage
 
   @time DateTime.utc_now()
   @naive NaiveDateTime.utc_now()

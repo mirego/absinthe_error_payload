@@ -1,5 +1,5 @@
-alias Kronky.ChangesetParser
-alias Kronky.Payload
-alias Kronky.TestHelper
-alias Kronky.ValidationMessageTypes
-alias Kronky.ValidationMessage
+alias AbsintheErrorPayload.ChangesetParser
+alias AbsintheErrorPayload.Payload
+alias AbsintheErrorPayload.TestHelper
+alias AbsintheErrorPayload.ValidationMessageTypes
+alias AbsintheErrorPayload.ValidationMessage
