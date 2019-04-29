@@ -1,7 +1,7 @@
 <p align="center">
   <img src="https://user-images.githubusercontent.com/464900/56933576-702b7880-6ab6-11e9-8b09-d86de46d2edc.png" width="600" />
   <br /><br />
-  Bridges the gap between <a target="_blank" href="https://hexdocs.pm/ecto/Ecto.html">Ecto</a> and <a target="_blank" href="http://absinthe-graphql.org/">Absinthe GraphQL</a><br /> by listing validation messages in a mutation payload.</p>
+  Bridges the gap between <a target="_blank" href="https://hexdocs.pm/ecto/Ecto.html">Ecto</a> and <a target="_blank" href="http://absinthe-graphql.org/">Absinthe GraphQL</a><br /> by listing validation messages in a mutation payload.
   <br /><br />
   <a href="https://travis-ci.com/mirego/absinthe-error-payload"><img src="https://travis-ci.com/mirego/absinthe-error-payload.svg?branch=master" /></a>
   <a href="https://coveralls.io/github/mirego/absinthe-error-payload?branch=master"><img src="https://coveralls.io/repos/github/mirego/absinthe-error-payload/badge.svg?branch=master" /></a>
