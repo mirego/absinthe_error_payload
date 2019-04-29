@@ -49,7 +49,7 @@ defmodule Kronky.ChangesetParserCustomFieldConstructorTest do
   end
 
   defp changeset(params) do
-    cast(%Post{}, params, ~w(title body upvotes decimal topics virtual))
+    cast(%Post{}, params, ~w(title body upvotes decimal topics virtual)a)
   end
 
   defmodule CustomFieldConstructor do

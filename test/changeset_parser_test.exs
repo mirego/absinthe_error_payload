@@ -53,7 +53,7 @@ defmodule Kronky.ChangesetParserTest do
   end
 
   defp changeset(params) do
-    cast(%Post{}, params, ~w(title body upvotes decimal topics virtual))
+    cast(%Post{}, params, ~w(title body upvotes decimal topics virtual)a)
   end
 
   defp changeset_with_embeds(params) do
@@ -64,7 +64,7 @@ defmodule Kronky.ChangesetParserTest do
         ]
       },
       params,
-      ~w(title body upvotes decimal topics virtual)
+      ~w(title body upvotes decimal topics virtual)a
     )
   end
 
@@ -279,7 +279,7 @@ defmodule Kronky.ChangesetParserTest do
       assert message.code == :min
       assert message.key == :title
       assert message.field == :title
-      assert message.options == [count: 2]
+      assert message.options == [count: 2, kind: :min, type: :string]
       assert message.message =~ ~r/2/
       assert message.template =~ ~r/%{count}/
     end
@@ -294,7 +294,7 @@ defmodule Kronky.ChangesetParserTest do
       assert message.code == :max
       assert message.key == :title
       assert message.field == :title
-      assert message.options == [count: 3]
+      assert message.options == [count: 3, kind: :max, type: :string]
       assert message.message =~ ~r/3/
       assert message.template =~ ~r/%{count}/
     end
@@ -309,7 +309,7 @@ defmodule Kronky.ChangesetParserTest do
       assert message.code == :length
       assert message.key == :title
       assert message.field == :title
-      assert message.options == [count: 7]
+      assert message.options == [count: 7, kind: :is, type: :string]
       assert message.message =~ ~r/7/
       assert message.template =~ ~r/%{count}/
     end
@@ -324,7 +324,7 @@ defmodule Kronky.ChangesetParserTest do
       assert message.code == :greater_than
       assert message.key == :upvotes
       assert message.field == :upvotes
-      assert message.options == [number: 10]
+      assert message.options == [kind: :greater_than, number: 10]
       assert message.message =~ ~r/10/
       assert message.template =~ ~r/%{number}/
     end
@@ -339,7 +339,7 @@ defmodule Kronky.ChangesetParserTest do
       assert message.code == :greater_than_or_equal_to
       assert message.key == :upvotes
       assert message.field == :upvotes
-      assert message.options == [number: 10]
+      assert message.options == [kind: :greater_than_or_equal_to, number: 10]
       assert message.message =~ ~r/10/
       assert message.template =~ ~r/%{number}/
     end
@@ -354,7 +354,7 @@ defmodule Kronky.ChangesetParserTest do
       assert message.code == :less_than
       assert message.key == :upvotes
       assert message.field == :upvotes
-      assert message.options == [number: 1]
+      assert message.options == [kind: :less_than, number: 1]
       assert message.message =~ ~r/1/
       assert message.template =~ ~r/%{number}/
     end
@@ -369,7 +369,7 @@ defmodule Kronky.ChangesetParserTest do
       assert message.code == :less_than_or_equal_to
       assert message.key == :upvotes
       assert message.field == :upvotes
-      assert message.options == [number: 1]
+      assert message.options == [kind: :less_than_or_equal_to, number: 1]
       assert message.message =~ ~r/1/
       assert message.template =~ ~r/%{number}/
     end
@@ -384,7 +384,7 @@ defmodule Kronky.ChangesetParserTest do
       assert message.code == :equal_to
       assert message.key == :upvotes
       assert message.field == :upvotes
-      assert message.options == [number: 1]
+      assert message.options == [kind: :equal_to, number: 1]
       assert message.message =~ ~r/1/
       assert message.template =~ ~r/%{number}/
     end
@@ -438,7 +438,7 @@ defmodule Kronky.ChangesetParserTest do
       params = %{"body" => :world}
       struct = %Post{}
 
-      changeset = cast(struct, params, ~w(body))
+      changeset = cast(struct, params, ~w(body)a)
 
       assert [%ValidationMessage{} = message] = ChangesetParser.extract_messages(changeset)
       assert message.code == :cast
