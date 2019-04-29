@@ -17,6 +17,10 @@ cache:
   - _build
   - deps
 
+env:
+  global:
+    - MIX_ENV: 'test'
+
 script:
   - ./ci-check.sh
   - mix coveralls.travis
