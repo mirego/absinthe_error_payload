@@ -18,5 +18,5 @@ cache:
   - deps
 
 script:
-  - ./priv/scripts/ci-check.sh
+  - ./ci-check.sh
   - mix coveralls.travis
