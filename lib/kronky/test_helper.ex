@@ -287,7 +287,7 @@ defmodule Kronky.TestHelper do
   @doc """
   Mapping of `Kronky.ValidationMessage` fields used by assert_mutation_failure
   """
-  def validation_message_fields() do
+  def validation_message_fields do
     %{
       field: :string,
       message: :string,

@@ -4,9 +4,11 @@ defmodule Kronky.ChangesetParserCustomFieldConstructorTest do
 
   """
   use ExUnit.Case, async: false
+
   import Ecto.Changeset
-  alias Kronky.ValidationMessage
+
   alias Kronky.ChangesetParser
+  alias Kronky.ValidationMessage
 
   # taken from Ecto.changeset tests
   defmodule Author do
@@ -81,7 +83,8 @@ defmodule Kronky.ChangesetParserCustomFieldConstructorTest do
       |> changeset()
       |> cast_assoc(:author,
         with: fn author, params ->
-          cast(author, params, ~w(name)a)
+          author
+          |> cast(params, ~w(name)a)
           |> validate_required(:name)
         end
       )
@@ -97,7 +100,8 @@ defmodule Kronky.ChangesetParserCustomFieldConstructorTest do
       |> changeset()
       |> cast_assoc(:tags,
         with: fn tag, params ->
-          cast(tag, params, ~w(name)a)
+          tag
+          |> cast(params, ~w(name)a)
           |> validate_required(:name)
         end
       )

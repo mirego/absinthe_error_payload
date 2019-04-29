@@ -9,7 +9,7 @@ defmodule Kronky.TestHelperTest do
 
   @time DateTime.utc_now()
   @naive NaiveDateTime.utc_now()
-  def fields() do
+  def fields do
     %{
       date: :date,
       naive: :date,
@@ -24,7 +24,7 @@ defmodule Kronky.TestHelperTest do
     }
   end
 
-  def input() do
+  def input do
     %{
       date: @time,
       naive: @naive,
@@ -39,7 +39,7 @@ defmodule Kronky.TestHelperTest do
     }
   end
 
-  def nil_input() do
+  def nil_input do
     %{
       date: nil,
       naive: nil,
@@ -51,7 +51,7 @@ defmodule Kronky.TestHelperTest do
     }
   end
 
-  def graphql() do
+  def graphql do
     %{
       "date" => to_string(@time),
       "naive" => to_string(@naive),
@@ -66,7 +66,7 @@ defmodule Kronky.TestHelperTest do
     }
   end
 
-  def nil_graphql() do
+  def nil_graphql do
     %{
       "date" => nil,
       "naive" => nil,

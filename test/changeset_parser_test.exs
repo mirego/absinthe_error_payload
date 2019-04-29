@@ -4,9 +4,11 @@ defmodule Kronky.ChangesetParserTest do
 
   """
   use ExUnit.Case
+
   import Ecto.Changeset
-  alias Kronky.ValidationMessage
+
   alias Kronky.ChangesetParser
+  alias Kronky.ValidationMessage
 
   # taken from Ecto.changeset tests
   defmodule Author do
@@ -111,7 +113,8 @@ defmodule Kronky.ChangesetParserTest do
         |> changeset()
         |> cast_assoc(:author,
           with: fn author, params ->
-            cast(author, params, ~w(name)a)
+            author
+            |> cast(params, ~w(name)a)
             |> validate_required(:name)
           end
         )
@@ -127,7 +130,8 @@ defmodule Kronky.ChangesetParserTest do
         |> changeset_with_embeds()
         |> cast_embed(:embedded_tags,
           with: fn tag, params ->
-            cast(tag, params, ~w(name)a)
+            tag
+            |> cast(params, ~w(name)a)
             |> validate_required(:name)
           end
         )
@@ -144,7 +148,8 @@ defmodule Kronky.ChangesetParserTest do
         |> changeset()
         |> cast_assoc(:tags,
           with: fn tag, params ->
-            cast(tag, params, ~w(name)a)
+            tag
+            |> cast(params, ~w(name)a)
             |> validate_required(:name)
           end
         )
@@ -443,18 +448,5 @@ defmodule Kronky.ChangesetParserTest do
       assert message.message != ""
       assert message.template != ""
     end
-  end
-
-  test "errors as map" do
-    changeset =
-      %{"title" => "foobar", "virtual" => "foobar"}
-      |> changeset()
-      |> validate_format(:title, ~r/@/)
-      |> validate_length(:virtual, is: 4)
-
-    result = ChangesetParser.messages_as_map(changeset)
-    assert %{title: title_errors, virtual: virtual_errors} = result
-    assert [{"has invalid format", [validation: :format]}] = title_errors
-    assert [{"should be %{count} character(s)", [count: 4, validation: :length, is: 4]}] = virtual_errors
   end
 end

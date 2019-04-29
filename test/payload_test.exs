@@ -4,11 +4,13 @@ defmodule Kronky.PayloadTest do
 
   """
   use ExUnit.Case
+
   import Ecto.Changeset
-  alias Kronky.ValidationMessage
-  alias Kronky.Payload
-  alias Absinthe.Resolution
   import Kronky.Payload
+
+  alias Absinthe.Resolution
+  alias Kronky.Payload
+  alias Kronky.ValidationMessage
 
   def resolution(value) do
     %Resolution{

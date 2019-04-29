@@ -87,10 +87,13 @@ defmodule Kronky.Payload do
 
   @enforce_keys [:successful]
   defstruct successful: nil, messages: [], result: nil
+
+  use Absinthe.Schema.Notation
+
+  import Kronky.ChangesetParser
+
   alias __MODULE__
   alias Kronky.ValidationMessage
-  import Kronky.ChangesetParser
-  use Absinthe.Schema.Notation
 
   @doc """
   Create a payload object definition
@@ -251,21 +254,25 @@ defmodule Kronky.Payload do
   end
   """
   def convert_to_payload({:error, %ValidationMessage{} = message}) do
-    message |> error_payload
+    error_payload(message)
   end
 
   def convert_to_payload(%ValidationMessage{} = message) do
-    message |> error_payload
+    error_payload(message)
   end
 
   def convert_to_payload({:error, message}) when is_binary(message) do
-    message |> generic_validation_message() |> error_payload
+    message
+    |> generic_validation_message()
+    |> error_payload()
   end
 
   def convert_to_payload({:error, list}) when is_list(list), do: error_payload(list)
 
   def convert_to_payload(%Ecto.Changeset{valid?: false} = changeset) do
-    changeset |> extract_messages() |> error_payload
+    changeset
+    |> extract_messages()
+    |> error_payload()
   end
 
   def convert_to_payload(value), do: success_payload(value)
@@ -310,7 +317,7 @@ defmodule Kronky.Payload do
   def error_payload(%ValidationMessage{} = message), do: error_payload([message])
 
   def error_payload(messages) when is_list(messages) do
-    messages = messages |> Enum.map(&prepare_message/1)
+    messages = Enum.map(messages, &prepare_message/1)
     %Payload{successful: false, messages: messages}
   end
 
@@ -329,7 +336,9 @@ defmodule Kronky.Payload do
   defp camelized_name(nil), do: nil
 
   defp camelized_name(field) do
-    field |> to_string() |> Absinthe.Utils.camelize(lower: true)
+    field
+    |> to_string()
+    |> Absinthe.Utils.camelize(lower: true)
   end
 
   defp prepare_message(%ValidationMessage{} = message) do

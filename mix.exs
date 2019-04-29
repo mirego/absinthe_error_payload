@@ -53,8 +53,8 @@ defmodule Kronky.Mixfile do
     [
       {:ecto, ">= 2.1.4"},
       {:absinthe, "~> 1.3"},
-      {:credo, "~> 0.7.4", only: [:dev, :test]},
       {:excoveralls, "~> 0.6", only: :test},
+      {:credo, "~> 1.0", only: [:dev, :test], runtime: false},
       {:ex_doc, "~> 0.14", only: :dev, runtime: false}
     ]
   end
