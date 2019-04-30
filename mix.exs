@@ -54,7 +54,7 @@ defmodule AbsintheErrorPayload.Mixfile do
   defp package do
     [
       maintainers: ["Simon Prévost"],
-      licenses: ["MIT"],
+      licenses: ["BSD-3"],
       links: %{
         "GitHub" => "https://github.com/mirego/absinthe_error_payload"
       }
