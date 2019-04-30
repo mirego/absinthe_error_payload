@@ -37,7 +37,7 @@ defmodule AbsintheErrorPayload.Mixfile do
 
   defp deps do
     [
-      {:ecto, ">= 2.1.4"},
+      {:ecto, "~> 3.1"},
       {:absinthe, "~> 1.3"},
       {:excoveralls, "~> 0.6", only: :test},
       {:credo, "~> 1.0", only: [:dev, :test], runtime: false},
