@@ -26,7 +26,7 @@ end
 
 ## Usage
 
-The best place to find usage examples is by looking at the test cases at the [AbsintheErrorPayload Github](https://github.com/Ethelo/absinthe_error_payload) or the docs for [AbsintheErrorPayload.Payload](https://hexdocs.pm/absinthe_error_payload/AbsintheErrorPayload.Payload.html#content)
+The best place to find usage examples is by looking at the test cases at the [AbsintheErrorPayload GitHub](https://github.com/mirego/absinthe_error_payload) or the docs for [AbsintheErrorPayload.Payload](https://hexdocs.pm/absinthe_error_payload/AbsintheErrorPayload.Payload.html#content)
 
 Here’s a quick summary of what AbsintheErrorPayload includes
 
