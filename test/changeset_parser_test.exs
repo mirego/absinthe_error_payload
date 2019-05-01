@@ -81,6 +81,27 @@ defmodule AbsintheErrorPayload.ChangesetParserTest do
   describe "multiples" do
     test "multiple fields with errors" do
       changeset =
+        %{"title" => "foobar", "virtual" => "foobar", "author" => %{"name" => ""}}
+        |> changeset()
+        |> cast_assoc(:author,
+          with: fn author, params ->
+            author
+            |> cast(params, ~w(name)a)
+            |> validate_required(:name)
+          end
+        )
+        |> validate_format(:title, ~r/@/)
+        |> validate_length(:virtual, is: 4)
+
+      result = ChangesetParser.extract_messages(changeset)
+      assert [first, second, third] = result
+      assert %ValidationMessage{field: "author.name", key: :name} = first
+      assert %ValidationMessage{code: :format, field: :title, key: :title} = second
+      assert %ValidationMessage{code: :length, field: :virtual, key: :virtual} = third
+    end
+
+    test "multiple fields with nested errors" do
+      changeset =
         %{"title" => "foobar", "virtual" => "foobar"}
         |> changeset()
         |> validate_format(:title, ~r/@/)

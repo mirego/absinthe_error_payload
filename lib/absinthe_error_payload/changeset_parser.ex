@@ -27,7 +27,7 @@ defmodule AbsintheErrorPayload.ChangesetParser do
 
   defp reject_replaced_changes(%{changes: changes} = changeset) do
     Enum.reduce(changes, changeset, fn {key, value}, acc ->
-      %{acc | changes: %{key => reject_replaced_changes(value)}}
+      %{acc | changes: Map.put(acc.changes, key, reject_replaced_changes(value))}
     end)
   end
 
