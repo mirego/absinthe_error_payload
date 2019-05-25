@@ -110,18 +110,23 @@ defmodule AbsintheErrorPayload.ChangesetParser do
   """
   # Code Taken from the Pheonix DataCase.on_errors/1 boilerplate"
   def interpolate_message({message, opts}) do
-    Enum.reduce(opts, message, fn
-      {key, _}, acc when is_tuple(key) ->
-        acc
+    Enum.reduce(opts, message, fn {key, value}, acc ->
+      key_pattern = "%{#{key}}"
 
-      {key, value}, acc ->
-        key_pattern = "%{#{key}}"
+      value =
+        case value do
+          {type, subtype} ->
+            type <> ":" <> subtype
 
-        if String.contains?(acc, key_pattern) do
-          String.replace(acc, key_pattern, to_string(value))
-        else
-          acc
+          _else ->
+            to_string(value)
         end
+
+      if String.contains?(acc, key_pattern) do
+        String.replace(acc, key_pattern, to_string(value))
+      else
+        acc
+      end
     end)
   end
 
