@@ -166,8 +166,7 @@ defmodule AbsintheErrorPayload.TestHelper do
   def assert_equivalent_graphql(expected, response, %{} = fields) when is_list(expected) do
     assert is_list(response), "expected a list, recieved #{inspect(response)}"
 
-    assert Enum.count(expected) == Enum.count(response),
-           "Expected #{Enum.count(expected)} items, recieved #{inspect(response)}"
+    assert Enum.count(expected) == Enum.count(response), "Expected #{Enum.count(expected)} items, recieved #{inspect(response)}"
 
     for {e, m} <- Enum.zip(expected, response) do
       assert_equivalent_graphql(e, m, fields)
