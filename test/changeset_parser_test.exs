@@ -83,7 +83,8 @@ defmodule AbsintheErrorPayload.ChangesetParserTest do
       changeset =
         %{"title" => "foobar", "virtual" => "foobar", "author" => %{"name" => ""}}
         |> changeset()
-        |> cast_assoc(:author,
+        |> cast_assoc(
+          :author,
           with: fn author, params ->
             author
             |> cast(params, ~w(name)a)
@@ -132,7 +133,8 @@ defmodule AbsintheErrorPayload.ChangesetParserTest do
       changeset =
         %{"author" => %{"name" => ""}}
         |> changeset()
-        |> cast_assoc(:author,
+        |> cast_assoc(
+          :author,
           with: fn author, params ->
             author
             |> cast(params, ~w(name)a)
@@ -149,7 +151,8 @@ defmodule AbsintheErrorPayload.ChangesetParserTest do
       changeset =
         %{"embedded_tags" => [%{"name" => ""}, %{"name" => "valid"}, %{"name" => ""}]}
         |> changeset_with_embeds()
-        |> cast_embed(:embedded_tags,
+        |> cast_embed(
+          :embedded_tags,
           with: fn tag, params ->
             tag
             |> cast(params, ~w(name)a)
@@ -167,7 +170,8 @@ defmodule AbsintheErrorPayload.ChangesetParserTest do
       changeset =
         %{"tags" => [%{"name" => ""}, %{"name" => ""}]}
         |> changeset()
-        |> cast_assoc(:tags,
+        |> cast_assoc(
+          :tags,
           with: fn tag, params ->
             tag
             |> cast(params, ~w(name)a)
