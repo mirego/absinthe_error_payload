@@ -111,7 +111,7 @@ defmodule AbsintheErrorPayload.ChangesetParser do
   # Code Taken from the Pheonix DataCase.on_errors/1 boilerplate"
   def interpolate_message({message, opts}) do
     Enum.reduce(opts, message, fn
-      {_, value}, acc when is_tuple(value) ->
+      {key, _}, acc when is_tuple(key) ->
         acc
 
       {key, value}, acc ->
