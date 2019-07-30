@@ -91,7 +91,7 @@ defmodule AbsintheErrorPayload.ChangesetParser do
       key: field,
       template: message,
       message: interpolate_message({message, opts}),
-      options: tidy_opts(opts)
+      options: opts |> tidy_opts() |> Enum.into(%{})
     }
   end
 

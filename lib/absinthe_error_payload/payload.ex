@@ -390,7 +390,7 @@ defmodule AbsintheErrorPayload.Payload do
       field: nil,
       template: message,
       message: message,
-      options: []
+      options: %{}
     }
   end
 end
