@@ -184,6 +184,7 @@ defmodule AbsintheErrorPayload.Payload do
   {:error, %ValidationMessage{}}
   {:error, [%ValidationMessage{},%ValidationMessage{}]}
   {:error, "This is an error"}
+  {:error, :error_atom}
   {:error, ["This is an error", "This is another error"]}
   ```
 
@@ -201,12 +202,13 @@ defmodule AbsintheErrorPayload.Payload do
   @doc """
   Convert resolution errors to a mutation payload
 
-  The build payload middleware will accept lists of `AbsintheErrorPayload.ValidationMessage` or string errors.
+  The build payload middleware will accept lists of `AbsintheErrorPayload.ValidationMessage`, atom, or string errors.
 
   Valid formats are:
   ```
   [%ValidationMessage{},%ValidationMessage{}]
   "This is an error"
+  :error_atom
   ["This is an error", "This is another error"]
   ```
   """
@@ -230,6 +232,7 @@ defmodule AbsintheErrorPayload.Payload do
   {:error, %ValidationMessage{}}
   {:error, [%ValidationMessage{},%ValidationMessage{}]}
   {:error, "This is an error"}
+  {:error, :error_atom}
   {:error, ["This is an error", "This is another error"]}
   ```
 
@@ -267,6 +270,8 @@ defmodule AbsintheErrorPayload.Payload do
     |> error_payload()
   end
 
+  def convert_to_payload({:error, message}) when is_atom(message), do: convert_to_payload({:error, "#{message}"})
+
   def convert_to_payload({:error, list}) when is_list(list), do: error_payload(list)
 
   def convert_to_payload(%Ecto.Changeset{valid?: false} = changeset) do
@@ -275,6 +280,7 @@ defmodule AbsintheErrorPayload.Payload do
     |> error_payload()
   end
 
+  å
   def convert_to_payload(value), do: success_payload(value)
 
   @doc """
@@ -347,6 +353,10 @@ defmodule AbsintheErrorPayload.Payload do
 
   defp prepare_message(message) when is_binary(message) do
     generic_validation_message(message)
+  end
+
+  defp prepare_message(message) when is_atom(message) do
+    generic_validation_message("#{message}")
   end
 
   defp prepare_message(message) do
