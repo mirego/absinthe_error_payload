@@ -256,7 +256,7 @@ defmodule AbsintheErrorPayload.ChangesetParserTest do
       assert message.code == :inclusion
       assert message.key == :title
       assert message.field == :title
-      assert message.options == []
+      assert message.options == [enum: ["world"]]
       assert message.message != ""
       assert message.template != ""
     end
@@ -271,7 +271,7 @@ defmodule AbsintheErrorPayload.ChangesetParserTest do
       assert message.code == :subset
       assert message.key == :topics
       assert message.field == :topics
-      assert message.options == []
+      assert message.options == [enum: ["cat", "dog"]]
       assert message.message != ""
       assert message.template != ""
     end
@@ -286,7 +286,7 @@ defmodule AbsintheErrorPayload.ChangesetParserTest do
       assert message.code == :exclusion
       assert message.key == :title
       assert message.field == :title
-      assert message.options == []
+      assert message.options == [enum: ["world"]]
       assert message.message != ""
       assert message.template != ""
     end
