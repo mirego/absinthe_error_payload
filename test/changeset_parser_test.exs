@@ -4,6 +4,7 @@ defmodule AbsintheErrorPayload.ChangesetParserTest do
 
   """
   use ExUnit.Case
+  doctest(AbsintheErrorPayload.ChangesetParser, import: true)
 
   import Ecto.Changeset
 
@@ -193,7 +194,7 @@ defmodule AbsintheErrorPayload.ChangesetParserTest do
       assert message.code == "foobar"
       assert message.key == :title
       assert message.field == :title
-      assert message.options == [illegal: "foobar"]
+      assert message.options == %{illegal: "foobar"}
       assert message.message =~ ~r/foobar/
       assert message.template =~ ~r/%{illegal}/
     end
@@ -210,7 +211,7 @@ defmodule AbsintheErrorPayload.ChangesetParserTest do
       assert message.code == "foobar"
       assert message.key == :title
       assert message.field == :title
-      assert message.options == [illegal: "foobar"]
+      assert message.options == %{illegal: "foobar"}
       assert message.message =~ ~r/foobar/
       assert message.template =~ ~r/%{illegal}/
     end
@@ -225,7 +226,7 @@ defmodule AbsintheErrorPayload.ChangesetParserTest do
       assert message.code == :unknown
       assert message.key == :title
       assert message.field == :title
-      assert message.options == [illegal: "foobar"]
+      assert message.options == %{illegal: "foobar"}
       assert message.message =~ ~r/foobar/
       assert message.template =~ ~r/%{illegal}/
     end
@@ -240,7 +241,7 @@ defmodule AbsintheErrorPayload.ChangesetParserTest do
       assert message.code == :format
       assert message.key == :title
       assert message.field == :title
-      assert message.options == []
+      assert message.options == %{}
       assert message.message != ""
       assert message.template != ""
     end
@@ -255,7 +256,7 @@ defmodule AbsintheErrorPayload.ChangesetParserTest do
       assert message.code == :inclusion
       assert message.key == :title
       assert message.field == :title
-      assert message.options == []
+      assert message.options == %{}
       assert message.message != ""
       assert message.template != ""
     end
@@ -270,7 +271,7 @@ defmodule AbsintheErrorPayload.ChangesetParserTest do
       assert message.code == :subset
       assert message.key == :topics
       assert message.field == :topics
-      assert message.options == []
+      assert message.options == %{}
       assert message.message != ""
       assert message.template != ""
     end
@@ -285,7 +286,7 @@ defmodule AbsintheErrorPayload.ChangesetParserTest do
       assert message.code == :exclusion
       assert message.key == :title
       assert message.field == :title
-      assert message.options == []
+      assert message.options == %{}
       assert message.message != ""
       assert message.template != ""
     end
@@ -300,7 +301,7 @@ defmodule AbsintheErrorPayload.ChangesetParserTest do
       assert message.code == :min
       assert message.key == :title
       assert message.field == :title
-      assert message.options == [count: 2, kind: :min, type: :string]
+      assert message.options == %{count: 2, kind: :min, type: :string}
       assert message.message =~ ~r/2/
       assert message.template =~ ~r/%{count}/
     end
@@ -315,7 +316,7 @@ defmodule AbsintheErrorPayload.ChangesetParserTest do
       assert message.code == :max
       assert message.key == :title
       assert message.field == :title
-      assert message.options == [count: 3, kind: :max, type: :string]
+      assert message.options == %{count: 3, kind: :max, type: :string}
       assert message.message =~ ~r/3/
       assert message.template =~ ~r/%{count}/
     end
@@ -330,7 +331,7 @@ defmodule AbsintheErrorPayload.ChangesetParserTest do
       assert message.code == :length
       assert message.key == :title
       assert message.field == :title
-      assert message.options == [count: 7, kind: :is, type: :string]
+      assert message.options == %{count: 7, kind: :is, type: :string}
       assert message.message =~ ~r/7/
       assert message.template =~ ~r/%{count}/
     end
@@ -345,7 +346,7 @@ defmodule AbsintheErrorPayload.ChangesetParserTest do
       assert message.code == :greater_than
       assert message.key == :upvotes
       assert message.field == :upvotes
-      assert message.options == [kind: :greater_than, number: 10]
+      assert message.options == %{kind: :greater_than, number: 10}
       assert message.message =~ ~r/10/
       assert message.template =~ ~r/%{number}/
     end
@@ -360,7 +361,7 @@ defmodule AbsintheErrorPayload.ChangesetParserTest do
       assert message.code == :greater_than_or_equal_to
       assert message.key == :upvotes
       assert message.field == :upvotes
-      assert message.options == [kind: :greater_than_or_equal_to, number: 10]
+      assert message.options == %{kind: :greater_than_or_equal_to, number: 10}
       assert message.message =~ ~r/10/
       assert message.template =~ ~r/%{number}/
     end
@@ -375,7 +376,7 @@ defmodule AbsintheErrorPayload.ChangesetParserTest do
       assert message.code == :less_than
       assert message.key == :upvotes
       assert message.field == :upvotes
-      assert message.options == [kind: :less_than, number: 1]
+      assert message.options == %{kind: :less_than, number: 1}
       assert message.message =~ ~r/1/
       assert message.template =~ ~r/%{number}/
     end
@@ -390,7 +391,7 @@ defmodule AbsintheErrorPayload.ChangesetParserTest do
       assert message.code == :less_than_or_equal_to
       assert message.key == :upvotes
       assert message.field == :upvotes
-      assert message.options == [kind: :less_than_or_equal_to, number: 1]
+      assert message.options == %{kind: :less_than_or_equal_to, number: 1}
       assert message.message =~ ~r/1/
       assert message.template =~ ~r/%{number}/
     end
@@ -405,7 +406,7 @@ defmodule AbsintheErrorPayload.ChangesetParserTest do
       assert message.code == :equal_to
       assert message.key == :upvotes
       assert message.field == :upvotes
-      assert message.options == [kind: :equal_to, number: 1]
+      assert message.options == %{kind: :equal_to, number: 1}
       assert message.message =~ ~r/1/
       assert message.template =~ ~r/%{number}/
     end
@@ -420,7 +421,7 @@ defmodule AbsintheErrorPayload.ChangesetParserTest do
       assert message.code == :confirmation
       assert message.key == :title_confirmation
       assert message.field == :title_confirmation
-      assert message.options == []
+      assert message.options == %{}
       assert message.message != ""
       assert message.template != ""
     end
@@ -435,7 +436,7 @@ defmodule AbsintheErrorPayload.ChangesetParserTest do
       assert message.code == :acceptance
       assert message.key == :terms_of_service
       assert message.field == :terms_of_service
-      assert message.options == []
+      assert message.options == %{}
       assert message.message != ""
       assert message.template != ""
     end
@@ -450,7 +451,7 @@ defmodule AbsintheErrorPayload.ChangesetParserTest do
       assert message.code == :required
       assert message.key == :title
       assert message.field == :title
-      assert message.options == []
+      assert message.options == %{}
       assert message.message != ""
       assert message.template != ""
     end
@@ -465,7 +466,7 @@ defmodule AbsintheErrorPayload.ChangesetParserTest do
       assert message.code == :cast
       assert message.key == :body
       assert message.field == :body
-      assert message.options == [type: :string]
+      assert message.options == %{type: :string}
       assert message.message != ""
       assert message.template != ""
     end
