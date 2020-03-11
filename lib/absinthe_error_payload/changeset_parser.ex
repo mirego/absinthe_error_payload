@@ -85,35 +85,60 @@ defmodule AbsintheErrorPayload.ChangesetParser do
   def construct_message(field, error_tuple)
 
   def construct_message(field, {message, opts}) do
+    options = build_opts(opts)
+
     %ValidationMessage{
       code: to_code({message, opts}),
       field: construct_field(field, nil),
       key: field,
       template: message,
-      message: interpolate_message({message, opts}),
-      options: tidy_opts(opts)
+      message: interpolate_message({message, options}),
+      options: to_key_value(options)
     }
   end
 
-  defp tidy_opts(opts) do
-    Keyword.drop(opts, [:validation, :max, :is, :min, :code])
+  defp to_key_value(opts) do
+    Enum.map(opts, fn {key, value} ->
+      %{
+        key: key,
+        value: interpolated_value_to_string(value)
+      }
+    end)
+  end
+
+  defp build_opts(opts) do
+    opts
+    |> Keyword.drop([:validation, :max, :is, :min, :code])
+    |> Map.new()
   end
 
   @doc """
   Inserts message variables into message.
+  Code inspired by Phoenix DataCase.on_errors/1 boilerplate.
 
   ## Examples
 
-      iex> interpolate_message({"length should be between %{one} and %{two}", [one: "1", two: "2", three: "3"]})
+      iex> interpolate_message({"length should be between %{one} and %{two}", %{one: "1", two: "2", three: "3"}})
       "length should be between 1 and 2"
+      iex> interpolate_message({"is already taken: %{fields}", %{fields: [:one, :two]}})
+      "is already taken: one,two"
 
   """
-  # Code Taken from the Pheonix DataCase.on_errors/1 boilerplate"
   def interpolate_message({message, opts}) do
     Enum.reduce(opts, message, fn {key, value}, acc ->
-      String.replace(acc, "%{#{key}}", to_string(value))
+      String.replace(acc, "%{#{key}}", interpolated_value_to_string(value))
     end)
   end
+
+  defp interpolated_value_to_string([item | _] = value) when is_atom(item) do
+    value
+    |> Enum.map(&to_string(&1))
+    |> interpolated_value_to_string()
+  end
+
+  defp interpolated_value_to_string(value) when is_list(value), do: Enum.join(value, ",")
+
+  defp interpolated_value_to_string(value), do: to_string(value)
 
   @doc """
   Generate unique code for each validation type.
