@@ -32,11 +32,12 @@ defmodule AbsintheErrorPayload.ValidationMessage do
   See `AbsintheErrorPayload.ChangesetParser.to_code/1` for built in codes corresponding to most Ecto validations.
 
   ### :options
-  A Keyword List of substitutions to be applied to a validation message template.
+  A list of key value pair to be applied to a validation message template.
+  The structure is a list of `%{key: _, value: _}` to be able to serialize to a GraphQL type
 
   ### :key
   Deprecated, use :field instead
   """
   @enforce_keys [:code]
-  defstruct field: nil, key: nil, code: nil, options: %{}, template: "is invalid", message: "is invalid"
+  defstruct field: nil, key: nil, code: nil, options: [], template: "is invalid", message: "is invalid"
 end

@@ -93,8 +93,17 @@ defmodule AbsintheErrorPayload.ChangesetParser do
       key: field,
       template: message,
       message: interpolate_message({message, options}),
-      options: options
+      options: to_key_value(options)
     }
+  end
+
+  defp to_key_value(opts) do
+    Enum.map(opts, fn {key, value} ->
+      %{
+        key: key,
+        value: interpolated_value_to_string(value)
+      }
+    end)
   end
 
   defp build_opts(opts) do

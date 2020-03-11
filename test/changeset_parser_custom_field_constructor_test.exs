@@ -74,7 +74,6 @@ defmodule AbsintheErrorPayload.ChangesetParserCustomFieldConstructorTest do
 
       assert %ValidationMessage{} = message
       assert message.field == "@root›title"
-      assert %{} == message.options
     end
   end
 
