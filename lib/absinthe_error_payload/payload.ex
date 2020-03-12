@@ -280,7 +280,6 @@ defmodule AbsintheErrorPayload.Payload do
     |> error_payload()
   end
 
-  å
   def convert_to_payload(value), do: success_payload(value)
 
   @doc """
