@@ -43,7 +43,7 @@ defmodule AbsintheErrorPayload.PayloadTest do
   end
 
   def assert_error_payload(messages, result) do
-    assert %{value: value} = result
+    assert %{value: value, errors: []} = result
 
     expected = payload(false, messages)
 
