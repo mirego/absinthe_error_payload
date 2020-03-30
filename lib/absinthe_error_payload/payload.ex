@@ -373,7 +373,7 @@ defmodule AbsintheErrorPayload.Payload do
   "
   def create(%{user: attrs}, _resolution) do
     case UserContext.create_user(attrs) do
-      {:ok, user} -> {ok, success_payload(user)}
+      {:ok, user} -> {:ok, success_payload(user)}
       {:error, %Ecto.Changeset{} = changeset} -> {:ok, error_payload(changeset)}
     end
   end
