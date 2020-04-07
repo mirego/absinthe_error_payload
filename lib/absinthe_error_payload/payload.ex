@@ -193,9 +193,14 @@ defmodule AbsintheErrorPayload.Payload do
   in your resolver instead. See `convert_to_payload/1`, `success_payload/1` and `error_payload/1` for examples.
 
   """
+  def build_payload(%{errors: [%Ecto.Changeset{} = errors]} = resolution, _config) do
+    result = convert_to_payload(errors)
+    %{resolution | value: result, errors: []}
+  end
+
   def build_payload(%{value: value, errors: []} = resolution, _config) do
     result = convert_to_payload(value)
-    Absinthe.Resolution.put_result(resolution, {:ok, result})
+    %{resolution | value: result, errors: []}
   end
 
   @doc """
@@ -210,9 +215,10 @@ defmodule AbsintheErrorPayload.Payload do
   ["This is an error", "This is another error"]
   ```
   """
+
   def build_payload(%{errors: errors} = resolution, _config) do
     result = convert_to_payload({:error, errors})
-    Absinthe.Resolution.put_result(resolution, {:ok, result})
+    %{resolution | value: result, errors: []}
   end
 
   @doc """
