@@ -95,6 +95,17 @@ defmodule AbsintheErrorPayload.PayloadTest do
       assert expected == value
     end
 
+    test "error tuple with an atom message" do
+      resolution = resolution({:error, :an_error})
+
+      result = build_payload(resolution, nil)
+
+      assert %{value: value} = result
+
+      expected = payload(false, [%ValidationMessage{code: :unknown, field: nil, key: nil, message: "an_error", options: [], template: "an_error"}])
+      assert expected == value
+    end
+
     test "error changeset" do
       changeset =
         {%{}, %{title: :string, title_lang: :string}}
@@ -156,6 +167,14 @@ defmodule AbsintheErrorPayload.PayloadTest do
       result = build_payload(resolution, nil)
 
       message = %ValidationMessage{code: :unknown, message: "an error", template: "an error"}
+      assert_error_payload([message], result)
+    end
+
+    test "error from resolution, atom message" do
+      resolution = resolution_error([:an_error])
+      result = build_payload(resolution, nil)
+
+      message = %ValidationMessage{code: :unknown, message: "an_error", template: "an_error"}
       assert_error_payload([message], result)
     end
 
