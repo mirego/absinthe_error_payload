@@ -142,6 +142,17 @@ defmodule AbsintheErrorPayload.PayloadTest do
       assert value.result == changeset
     end
 
+    test "error transaction with an atom message" do
+      resolution = resolution({:error, :action, :an_error, %{}})
+
+      result = build_payload(resolution, nil)
+
+      assert %{value: value} = result
+
+      expected = payload(false, [%ValidationMessage{code: :unknown, field: nil, key: nil, message: "an_error", options: [], template: "an_error"}])
+      assert expected == value
+    end
+
     test "map" do
       map = %{something: "something"}
       resolution = resolution(map)
