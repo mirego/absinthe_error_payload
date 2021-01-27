@@ -204,20 +204,6 @@ defmodule AbsintheErrorPayload.Payload do
     %{resolution | value: result, errors: []}
   end
 
-  @doc """
-  Convert resolution errors to a mutation payload
-
-  The build payload middleware will accept lists of `AbsintheErrorPayload.ValidationMessage`, atom, or string errors.
-
-  Valid formats are:
-  ```
-  [%ValidationMessage{},%ValidationMessage{}]
-  "This is an error"
-  :error_atom
-  ["This is an error", "This is another error"]
-  ```
-  """
-
   def build_payload(%{errors: errors} = resolution, _config) do
     result = convert_to_payload({:error, errors})
     %{resolution | value: result, errors: []}
