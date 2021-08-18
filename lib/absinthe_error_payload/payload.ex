@@ -128,7 +128,7 @@ defmodule AbsintheErrorPayload.Payload do
     end
   end
 
-  @doc """
+  @doc ~S'''
   Convert a resolution value to a mutation payload
 
   To be used as middleware by Absinthe.Graphql. It should be placed immediatly after the resolver.
@@ -138,11 +138,11 @@ defmodule AbsintheErrorPayload.Payload do
   Your resolver could then look like:
 
   ```elixir
-  @doc "
+  @doc """
   Creates a new user
 
   Results are wrapped in a result monad as expected by absinthe.
-  "
+  """
   def create(%{user: attrs}, _resolution) do
     case UserContext.create_user(attrs) do
       {:ok, user} -> {:ok, user}
@@ -158,11 +158,11 @@ defmodule AbsintheErrorPayload.Payload do
   An example resolver could look like:
 
   ```
-  @doc "
+  @doc """
   updates an existing user.
 
   Results are wrapped in a result monad as expected by absinthe.
-  "
+  """
   def update(%{id: id, user: attrs}, _resolution) do
     case UserContext.get_user(id) do
       nil -> {:ok, %ValidationMessage{field: :id, code: "not found", message: "does not exist"}}
@@ -193,7 +193,7 @@ defmodule AbsintheErrorPayload.Payload do
   If you'd prefer not to use the middleware style, you can generate AbsintheErrorPayload payloads
   in your resolver instead. See `convert_to_payload/1`, `success_payload/1` and `error_payload/1` for examples.
 
-  """
+  '''
   def build_payload(%{errors: [%Ecto.Changeset{} = errors]} = resolution, _config) do
     result = convert_to_payload(errors)
     %{resolution | value: result, errors: []}
@@ -209,7 +209,7 @@ defmodule AbsintheErrorPayload.Payload do
     %{resolution | value: result, errors: []}
   end
 
-  @doc """
+  @doc ~S'''
   Direct converter from value to a `Payload` struct.
 
   This function will automatically transform an invalid changeset into validation errors.
@@ -235,11 +235,11 @@ defmodule AbsintheErrorPayload.Payload do
   An example use could look like:
 
   ```
-  @doc "
+  @doc """
   Load a user matching an id
 
   Results are wrapped in a result monad as expected by absinthe.
-  "
+  """
   def get_user(%{id: id}, _resolution) do
     case UserContext.get_user(id) do
       nil -> %ValidationMessage{field: :id, code: "not found", message: "does not exist"}}
@@ -247,7 +247,7 @@ defmodule AbsintheErrorPayload.Payload do
     end
     |> AbsintheErrorPayload.Payload.convert_to_payload()
   end
-  """
+  '''
   def convert_to_payload({:error, %ValidationMessage{} = message}) do
     error_payload(message)
   end
@@ -274,7 +274,7 @@ defmodule AbsintheErrorPayload.Payload do
 
   def convert_to_payload(value), do: success_payload(value)
 
-  @doc """
+  @doc ~S'''
   Generates a mutation error payload.
 
   ## Examples
@@ -291,11 +291,11 @@ defmodule AbsintheErrorPayload.Payload do
 
   ```elixir
 
-  @doc "
+  @doc """
   updates an existing user.
 
   Results are wrapped in a result monad as expected by absinthe.
-  "
+  """
   def update(%{id: id, user: attrs}, _resolution) do
     case UserContext.get_user(id) do
       nil -> {:ok, error_payload([%ValidationMessage{field: :id, code: "not found", message: "does not exist"}])}
@@ -310,7 +310,7 @@ defmodule AbsintheErrorPayload.Payload do
     end
   end
   ```
-  """
+  '''
   def error_payload(%ValidationMessage{} = message), do: error_payload([message])
 
   def error_payload(messages) when is_list(messages) do
@@ -354,7 +354,7 @@ defmodule AbsintheErrorPayload.Payload do
     raise ArgumentError, "Unexpected validation message: #{inspect(message)}"
   end
 
-  @doc """
+  @doc ~S'''
   Generates a success payload.
 
   ## Examples
@@ -367,11 +367,11 @@ defmodule AbsintheErrorPayload.Payload do
   If you prefer not to use the `build_payload/2` middleware, you can use this method in your resolvers instead.
 
   ```elixir
-  @doc "
+  @doc """
   Creates a new user
 
   Results are wrapped in a result monad as expected by absinthe.
-  "
+  """
   def create(%{user: attrs}, _resolution) do
     case UserContext.create_user(attrs) do
       {:ok, user} -> {:ok, success_payload(user)}
@@ -380,7 +380,7 @@ defmodule AbsintheErrorPayload.Payload do
   end
   ```
 
-  """
+  '''
   def success_payload(result) do
     %Payload{successful: true, result: result}
   end
