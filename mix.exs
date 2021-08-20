@@ -41,7 +41,7 @@ defmodule AbsintheErrorPayload.Mixfile do
       {:absinthe, "~> 1.3"},
       {:excoveralls, "~> 0.6", only: :test},
       {:credo, "~> 1.0", only: [:dev, :test], runtime: false},
-      {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
+      {:ex_doc, ">= 0.0.0", only: :dev, runtime: false}
     ]
   end
 
