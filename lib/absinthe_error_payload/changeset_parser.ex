@@ -7,10 +7,11 @@ defmodule AbsintheErrorPayload.ChangesetParser do
   import Ecto.Changeset, only: [traverse_errors: 2]
   alias AbsintheErrorPayload.ValidationMessage
 
-  @doc "Generate a list of `AbsintheErrorPayload.ValidationMessage` structs from changeset errors
+  @doc """
+  Generate a list of `AbsintheErrorPayload.ValidationMessage` structs from changeset errors
 
   For examples, please see the test cases in the github repo.
-  "
+  """
   def extract_messages(changeset) do
     changeset
     |> reject_replaced_changes()
@@ -69,19 +70,19 @@ defmodule AbsintheErrorPayload.ChangesetParser do
     |> apply(:error, [parent_field, field, options])
   end
 
-  @doc "Generate a single `AbsintheErrorPayload.ValidationMessage` struct from a changeset.
+  @doc """
+  Generate a single `AbsintheErrorPayload.ValidationMessage` struct from a changeset.
 
   This method is designed to be used with `Ecto.Changeset.traverse_errors` to generate a map of structs.
 
   ## Examples
-    ```
-    error_map = Changeset.traverse_errors(fn(changeset, field, error) ->
-      AbsintheErrorPayload.ChangesetParser.construct_message(field, error)
-    end)
-    error_list = Enum.flat_map(error_map, fn({_, messages}) -> messages end)
 
-    ```
-  "
+      error_map = Changeset.traverse_errors(fn(changeset, field, error) ->
+        AbsintheErrorPayload.ChangesetParser.construct_message(field, error)
+      end)
+      error_list = Enum.flat_map(error_map, fn({_, messages}) -> messages end)
+
+  """
   def construct_message(field, error_tuple)
 
   def construct_message(field, {message, opts}) do
