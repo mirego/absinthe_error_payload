@@ -32,7 +32,7 @@ defmodule AbsintheErrorPayload.ValidationMessageTypes do
     field :message, :string, description: "..."
     field :code, non_null(:string), description: "..."
     field :template, :string, description: "..."
-    field :options, list_of(:validation_option), description: "..."
+    field :options, non_null(list_of(non_null(:validation_option))), description: "..."
   end
   ```
 
@@ -103,6 +103,6 @@ defmodule AbsintheErrorPayload.ValidationMessageTypes do
     field(:template, :string, description: @descs.template)
 
     @desc "A list of substitutions to be applied to a validation message template"
-    field(:options, list_of(:validation_option), description: @descs.option_list)
+    field(:options, non_null(list_of(non_null(:validation_option))), description: @descs.option_list)
   end
 end

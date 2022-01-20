@@ -110,9 +110,9 @@ defmodule AbsintheErrorPayload.Payload do
 
   ```elixir
   object :user_payload do
-    field :successful, non_null(:boolean), description: "Indicates if the mutation completed successfully or not. "
-    field :messages, list_of(:validation_message), description: "A list of failed validations. May be blank or null if mutation succeeded."
-    field :result, :user, description: "The object created/updated/deleted by the mutation"
+    field :successful, non_null(:boolean), description: "..."
+    field :messages, non_null(list_of(non_null(:validation_message))), description: "..."
+    field :result, :user, description: "..."
   end
   ```
 
@@ -122,7 +122,7 @@ defmodule AbsintheErrorPayload.Payload do
     quote location: :keep do
       object unquote(payload_name) do
         field(:successful, non_null(:boolean), description: "Indicates if the mutation completed successfully or not. ")
-        field(:messages, list_of(:validation_message), description: "A list of failed validations. May be blank or null if mutation succeeded.")
+        field(:messages, non_null(list_of(non_null(:validation_message))), description: "A list of failed validations. Empty if mutation succeeded.")
         field(:result, unquote(result_object_name), description: "The object created/updated/deleted by the mutation. May be null if mutation failed.")
       end
     end
@@ -202,19 +202,6 @@ defmodule AbsintheErrorPayload.Payload do
     result = convert_to_payload(value)
     %{resolution | value: result, errors: []}
   end
-
-  @doc """
-  Convert resolution errors to a mutation payload
-
-  The build payload middleware will accept lists of `AbsintheErrorPayload.ValidationMessage` or string errors.
-
-  Valid formats are:
-  ```
-  [%ValidationMessage{},%ValidationMessage{}]
-  "This is an error"
-  ["This is an error", "This is another error"]
-  ```
-  """
 
   def build_payload(%{errors: errors} = resolution, _config) do
     result = convert_to_payload({:error, errors})
