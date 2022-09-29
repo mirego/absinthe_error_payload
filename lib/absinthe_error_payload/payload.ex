@@ -6,7 +6,7 @@ defmodule AbsintheErrorPayload.Payload do
 
   - `successful` - Indicates if the mutation completed successfully or not. Boolean.
   - `messages` - a list of validation errors. Always empty on success
-  - `result` - the data object that was created/updated/deleted on success. Always nil when unsuccesful
+  - `result` - the data object that was created/updated/deleted on success. Always nil when unsuccessful
 
 
   ## Usage
@@ -131,7 +131,7 @@ defmodule AbsintheErrorPayload.Payload do
   @doc ~S'''
   Convert a resolution value to a mutation payload
 
-  To be used as middleware by Absinthe.Graphql. It should be placed immediatly after the resolver.
+  To be used as middleware by Absinthe.Graphql. It should be placed immediately after the resolver.
 
   The middleware will automatically transform an invalid changeset into validation errors.
 

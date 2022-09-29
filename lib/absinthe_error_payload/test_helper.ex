@@ -138,7 +138,7 @@ defmodule AbsintheErrorPayload.TestHelper do
   of the data. This performs some simple transforms to properly compare values, including:
 
   - camelCasing field names
-  - coverting all non-int values to strings, including converting `false` to `"false"`
+  - converting all non-int values to strings, including converting `false` to `"false"`
   - uppercasing enum field responses
   - parsing date types as ISO Extended format strings
 
@@ -164,10 +164,10 @@ defmodule AbsintheErrorPayload.TestHelper do
 
   """
   def assert_equivalent_graphql(expected, response, %{} = fields) when is_list(expected) do
-    assert is_list(response), "expected a list, recieved #{inspect(response)}"
+    assert is_list(response), "expected a list, received #{inspect(response)}"
 
     assert Enum.count(expected) == Enum.count(response),
-           "Expected #{Enum.count(expected)} items, recieved #{inspect(response)}"
+           "Expected #{Enum.count(expected)} items, received #{inspect(response)}"
 
     for {e, m} <- Enum.zip(expected, response) do
       assert_equivalent_graphql(e, m, fields)

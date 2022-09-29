@@ -56,7 +56,7 @@ Thank you [Ethelo](http://ethelo.com/) for the awesome library!
 
 AbsintheErrorPayload is © 2019 [Mirego](https://www.mirego.com) and may be freely distributed under the [New BSD license](http://opensource.org/licenses/BSD-3-Clause). See the [`LICENSE.md`](https://github.com/mirego/absinthe_error_payload/blob/master/LICENSE.md) file.
 
-As mentionned above, AbsintheErrorPayload is based on [Kronky](https://github.com/Ethelo/kronky) which is licensed under the [MIT license](http://opensource.org/licenses/MIT). See the [`KRONKY_LICENSE.md`](https://github.com/mirego/absinthe_error_payload/blob/master/KRONKY_LICENSE.md) file.
+As mentioned above, AbsintheErrorPayload is based on [Kronky](https://github.com/Ethelo/kronky) which is licensed under the [MIT license](http://opensource.org/licenses/MIT). See the [`KRONKY_LICENSE.md`](https://github.com/mirego/absinthe_error_payload/blob/master/KRONKY_LICENSE.md) file.
 
 The flask logo is based on [this lovely icon by Danil Polshin](https://thenounproject.com/term/flask/1428207), from The Noun Project. Used under a [Creative Commons BY 3.0](http://creativecommons.org/licenses/by/3.0/) license.
 
