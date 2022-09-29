@@ -22,7 +22,7 @@ defmodule AbsintheErrorPayload.ValidationMessage do
   Example: `"Username must be at least 10 characters"`
 
   ### :template
-  A template used to generate the error message, with placeholders for option substiution.
+  A template used to generate the error message, with placeholders for option substitution.
 
   Example: `"Username must be at least %{count} characters"`
 

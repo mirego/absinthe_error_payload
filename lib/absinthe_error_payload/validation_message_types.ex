@@ -36,12 +36,12 @@ defmodule AbsintheErrorPayload.ValidationMessageTypes do
   end
   ```
 
-  Actual descriptions have been ommited for brevity - check the github repo to see them.
+  Actual descriptions have been omitted for brevity - check the github repo to see them.
   """
   use Absinthe.Schema.Notation
 
   object(:validation_option) do
-    @desc "The name of a variable to be subsituted in a validation message template"
+    @desc "The name of a variable to be substituted in a validation message template"
     field(:key, non_null(:string), description: @descs.option_key)
 
     @desc "The value of a variable to be substituted in a validation message template"
@@ -93,7 +93,7 @@ defmodule AbsintheErrorPayload.ValidationMessageTypes do
     field(:code, non_null(:string), description: @descs.code)
 
     @desc """
-    A template used to generate the error message, with placeholders for option substiution.
+    A template used to generate the error message, with placeholders for option substitution.
 
     Example: `Username must be at least {count} characters`
 
