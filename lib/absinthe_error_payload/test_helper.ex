@@ -127,6 +127,13 @@ defmodule AbsintheErrorPayload.TestHelper do
     assert {field, expected} == {field, response}
   end
 
+  defp assert_values_match({_field, %{} = sub_fields, expected, response}) do
+    sub_fields
+    |> Enum.to_list()
+    |> Enum.map(fn field_tuple -> value_tuple(field_tuple, expected, response) end)
+    |> Enum.each(&assert_values_match/1)
+  end
+
   defp assert_values_match({field, _type, expected, response}) do
     assert {field, expected} == {field, response}
   end

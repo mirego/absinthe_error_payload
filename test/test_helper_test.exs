@@ -24,6 +24,17 @@ defmodule AbsintheErrorPayload.TestHelperTest do
     }
   end
 
+  def nested_fields do
+    %{
+      root: :string,
+      single: %{
+        string: :string,
+        integer: :integer,
+        nillable: :nillable
+      }
+    }
+  end
+
   def input do
     %{
       date: @time,
@@ -48,6 +59,17 @@ defmodule AbsintheErrorPayload.TestHelperTest do
       float: nil,
       boolean1: nil,
       enum: nil
+    }
+  end
+
+  def nested_input do
+    %{
+      root: "root string",
+      single: %{
+        string: "single nested string",
+        integer: 1,
+        nillable: nil
+      }
     }
   end
 
@@ -78,6 +100,17 @@ defmodule AbsintheErrorPayload.TestHelperTest do
     }
   end
 
+  def nested_graphql do
+    %{
+      "root" => "root string",
+      "single" => %{
+        "string" => "single nested string",
+        "integer" => 1,
+        "nillable" => nil
+      }
+    }
+  end
+
   describe "assert_equivalent_graphql/3" do
     test "all types compare" do
       assert_equivalent_graphql(input(), graphql(), fields())
@@ -94,6 +127,10 @@ defmodule AbsintheErrorPayload.TestHelperTest do
         fields()
       )
     end
+
+    test "nested fields compare" do
+      assert_equivalent_graphql(nested_input(), nested_graphql(), nested_fields())
+    end
   end
 
   describe "assert_mutation_success/3" do
@@ -105,6 +142,16 @@ defmodule AbsintheErrorPayload.TestHelperTest do
       }
 
       assert_mutation_success(input(), mutation_response, fields())
+    end
+
+    test "matches result with nested fields" do
+      mutation_response = %{
+        "successful" => true,
+        "messages" => [],
+        "result" => nested_graphql()
+      }
+
+      assert_mutation_success(nested_input(), mutation_response, nested_fields())
     end
   end
 
