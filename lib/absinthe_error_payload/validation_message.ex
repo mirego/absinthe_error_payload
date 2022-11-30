@@ -38,6 +38,21 @@ defmodule AbsintheErrorPayload.ValidationMessage do
   ### :key
   Deprecated, use :field instead
   """
+
+  @type t() :: %__MODULE__{
+    field: atom() | String.t() | nil,
+    key: atom() | String.t() | nil,
+    code: atom() | String.t(),
+    options: [option()],
+    template: String.t(),
+    message: String.t()
+  }
+
+  @type option() :: %{
+    required(:key) => any(), 
+    required(:value) => any()
+  }
+
   @enforce_keys [:code]
   defstruct field: nil, key: nil, code: nil, options: [], template: "is invalid", message: "is invalid"
 end
