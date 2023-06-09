@@ -1,14 +1,26 @@
 name: CI
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
 
 jobs:
   ci:
-    runs-on: ubuntu-latest
+    # Ubuntu 20.04, Erlang/OTP 20-25
+    # https://github.com/erlef/setup-beam
+    name: Erlang ${{matrix.otp-version}} / Elixir ${{matrix.elixir-version}}
+    runs-on: ubuntu-20.04
     strategy:
       matrix:
-        elixir-version: [1.12.x, 1.11.x, 1.10.x, 1.9.x, 1.8.x]
+        # https://hexdocs.pm/elixir/compatibility-and-deprecations.html
+        elixir-version: [1.14.x, 1.13.x, 1.12.x, 1.11.x, 1.10.x, 1.9.x, 1.8.x]
         include:
+          - elixir-version: 1.14.x
+            otp-version: 25.x
+          - elixir-version: 1.13.x
+            otp-version: 24.x
           - elixir-version: 1.12.x
             otp-version: 24.x
           - elixir-version: 1.11.x
@@ -22,7 +34,7 @@ jobs:
     env:
       MIX_ENV: test
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: erlef/setup-beam@v1
         with:
           otp-version: ${{ matrix.otp-version }}
