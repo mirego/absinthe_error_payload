@@ -70,6 +70,10 @@ defmodule AbsintheErrorPayload.ChangesetParserTest do
     )
   end
 
+  defp sorted_options(options) do
+    Enum.sort_by(options, & &1.key)
+  end
+
   describe "interpolate_message/1" do
     test "interpolates correctly" do
       result = ChangesetParser.interpolate_message({"Test %{one}", [one: "1"]})
@@ -96,7 +100,7 @@ defmodule AbsintheErrorPayload.ChangesetParserTest do
         |> validate_length(:virtual, is: 4)
 
       result = ChangesetParser.extract_messages(changeset)
-      assert [first, second, third] = result
+      assert [first, second, third] = Enum.sort_by(result, &to_string(&1.field))
       assert %ValidationMessage{field: "author.name", key: :name} = first
       assert %ValidationMessage{code: :format, field: :title, key: :title} = second
       assert %ValidationMessage{code: :length, field: :virtual, key: :virtual} = third
@@ -303,7 +307,7 @@ defmodule AbsintheErrorPayload.ChangesetParserTest do
       assert message.key == :title
       assert message.field == :title
 
-      assert message.options == [
+      assert sorted_options(message.options) == [
                %{key: :count, value: "2"},
                %{key: :kind, value: "min"},
                %{key: :type, value: "string"}
@@ -323,7 +327,7 @@ defmodule AbsintheErrorPayload.ChangesetParserTest do
       assert message.code == :max
       assert message.key == :title
       assert message.field == :title
-      assert message.options == [%{key: :count, value: "3"}, %{key: :kind, value: "max"}, %{key: :type, value: "string"}]
+      assert sorted_options(message.options) == [%{key: :count, value: "3"}, %{key: :kind, value: "max"}, %{key: :type, value: "string"}]
       assert message.message =~ ~r/3/
       assert message.template =~ ~r/%{count}/
     end
@@ -339,7 +343,7 @@ defmodule AbsintheErrorPayload.ChangesetParserTest do
       assert message.key == :title
       assert message.field == :title
 
-      assert message.options == [
+      assert sorted_options(message.options) == [
                %{key: :count, value: "7"},
                %{key: :kind, value: "is"},
                %{key: :type, value: "string"}
@@ -359,7 +363,7 @@ defmodule AbsintheErrorPayload.ChangesetParserTest do
       assert message.code == :greater_than
       assert message.key == :upvotes
       assert message.field == :upvotes
-      assert message.options == [%{key: :kind, value: "greater_than"}, %{key: :number, value: "10"}]
+      assert sorted_options(message.options) == [%{key: :kind, value: "greater_than"}, %{key: :number, value: "10"}]
       assert message.message =~ ~r/10/
       assert message.template =~ ~r/%{number}/
     end
@@ -375,7 +379,7 @@ defmodule AbsintheErrorPayload.ChangesetParserTest do
       assert message.key == :upvotes
       assert message.field == :upvotes
 
-      assert message.options == [
+      assert sorted_options(message.options) == [
                %{key: :kind, value: "greater_than_or_equal_to"},
                %{key: :number, value: "10"}
              ]
@@ -395,7 +399,7 @@ defmodule AbsintheErrorPayload.ChangesetParserTest do
       assert message.key == :upvotes
       assert message.field == :upvotes
 
-      assert message.options ==
+      assert sorted_options(message.options) ==
                [
                  %{key: :kind, value: "less_than"},
                  %{key: :number, value: "1"}
@@ -416,7 +420,7 @@ defmodule AbsintheErrorPayload.ChangesetParserTest do
       assert message.key == :upvotes
       assert message.field == :upvotes
 
-      assert message.options == [
+      assert sorted_options(message.options) == [
                %{key: :kind, value: "less_than_or_equal_to"},
                %{key: :number, value: "1"}
              ]
@@ -435,7 +439,7 @@ defmodule AbsintheErrorPayload.ChangesetParserTest do
       assert message.code == :equal_to
       assert message.key == :upvotes
       assert message.field == :upvotes
-      assert message.options == [%{key: :kind, value: "equal_to"}, %{key: :number, value: "1"}]
+      assert sorted_options(message.options) == [%{key: :kind, value: "equal_to"}, %{key: :number, value: "1"}]
       assert message.message =~ ~r/1/
       assert message.template =~ ~r/%{number}/
     end
@@ -508,10 +512,10 @@ defmodule AbsintheErrorPayload.ChangesetParserTest do
 
       assert [%ValidationMessage{} = message] = ChangesetParser.extract_messages(changeset)
 
-      assert message.code == :cast
+      assert message.code == :inclusion
       assert message.key == :language
       assert message.field == :language
-      assert message.options == [%{key: :type, value: "en,fr"}]
+      assert sorted_options(message.options) == [%{key: :enum, value: "en,fr"}, %{key: :type, value: "en,fr"}]
       assert message.message != ""
       assert message.template != ""
     end

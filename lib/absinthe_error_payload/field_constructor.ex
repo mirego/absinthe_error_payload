@@ -1,4 +1,6 @@
 defmodule AbsintheErrorPayload.FieldConstructor do
+  @moduledoc false
+
   @callback error(String.t(), String.t(), list()) :: String.t()
 
   def error(parent_field, field, options \\ [])

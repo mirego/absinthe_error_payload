@@ -139,7 +139,12 @@ defmodule AbsintheErrorPayload.ChangesetParser do
 
   defp interpolated_value_to_string(value) when is_list(value), do: Enum.join(value, ",")
 
+  # Ecto < 3.12
   defp interpolated_value_to_string({:parameterized, Ecto.Enum, %{on_load: mappings}}),
+    do: mappings |> Map.values() |> Enum.join(",")
+
+  # Ecto >= 3.12
+  defp interpolated_value_to_string({:parameterized, {Ecto.Enum, %{on_load: mappings}}}),
     do: mappings |> Map.values() |> Enum.join(",")
 
   defp interpolated_value_to_string(value), do: to_string(value)
