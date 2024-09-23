@@ -11,11 +11,11 @@ jobs:
     env:
       HEX_API_KEY: ${{ secrets.MIREGO_HEXPM_API_KEY }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: erlef/setup-beam@v1
         with:
-          otp-version: 24.x
-          elixir-version: 1.12.x
+          otp-version: 27.x
+          elixir-version: 1.17.x
       - run: mix deps.get
       - run: mix compile --docs
       - run: mix hex.publish --yes
