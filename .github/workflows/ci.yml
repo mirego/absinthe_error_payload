@@ -4,17 +4,24 @@ on: [push, pull_request]
 
 jobs:
   ci:
-    name: Erlang ${{matrix.otp-version}} / Elixir ${{matrix.elixir-version}}
+    name: OTP ${{ matrix.otp-version }} / Elixir ${{ matrix.elixir-version }}
     runs-on: ubuntu-20.04
     strategy:
       matrix:
         # https://hexdocs.pm/elixir/compatibility-and-deprecations.html
-        elixir-version: [1.17.x, 1.16.x, 1.15.x, 1.14.x, 1.13.x]
         include:
+          - elixir-version: 1.17.x
+            otp-version: 27.x
+          - elixir-version: 1.17.x
+            otp-version: 26.x
           - elixir-version: 1.17.x
             otp-version: 25.x
           - elixir-version: 1.16.x
+            otp-version: 26.x
+          - elixir-version: 1.16.x
             otp-version: 25.x
+          - elixir-version: 1.15.x
+            otp-version: 26.x
           - elixir-version: 1.15.x
             otp-version: 25.x
           - elixir-version: 1.14.x
@@ -32,7 +39,7 @@ jobs:
       - run: make dependencies
       - run: make lint
       - run: make test
-      - run: mix coveralls.github
+      - run: mix coveralls.github --parallel --flagname otp-${{ matrix.otp-version }}-elixir-${{ matrix.elixir-version }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: mix hex.publish --dry-run
