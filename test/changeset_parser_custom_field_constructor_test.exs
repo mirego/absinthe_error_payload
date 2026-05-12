@@ -62,7 +62,9 @@ defmodule AbsintheErrorPayload.ChangesetParserCustomFieldConstructorTest do
   end
 
   setup do
+    original = Application.get_env(:absinthe_error_payload, :field_constructor)
     Application.put_env(:absinthe_error_payload, :field_constructor, CustomFieldConstructor)
+    on_exit(fn -> Application.put_env(:absinthe_error_payload, :field_constructor, original) end)
   end
 
   describe "construct_message/2" do
